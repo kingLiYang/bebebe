@@ -45,8 +45,8 @@
         <el-table-column prop="relly_name" label="姓名" align="center"></el-table-column>
         <el-table-column prop="name" label="职务" align="center"></el-table-column>
         <el-table-column prop="phone" label="联系电话" align="center"></el-table-column>
-        <el-table-column prop="email" label="邮箱" align="center"></el-table-column>
-        <el-table-column prop="addtime" label="添加时间" align="center" :formatter="timesta"></el-table-column>
+        <el-table-column prop="email" label="邮箱" align="center" width="150"></el-table-column>
+        <el-table-column prop="addtime" label="添加时间" align="center" :formatter="timesta" width="150"></el-table-column>
         <el-table-column prop="region" label="地区" align="center"></el-table-column>
         <el-table-column prop="status" label="使用状态" align="center" :formatter="formatter"></el-table-column>
 
@@ -205,15 +205,18 @@ export default {
             ]
           })
         .then(res => {
+
           this.tableData = res.data.data.data;
           this.ccc = res.data.data.count;
         });
     },
     formatter(row, column) {
       return row.status == 1 ? "启用" : "禁用";
+
     },
     timesta(row, column) {
-      let date = new Date(parseInt(row.addtime) * 1000);
+
+      let date = new Date(JSON.parse(row.addtime) * 1000);
       let Y = date.getFullYear() + "-";
       let M =
         date.getMonth() + 1 < 10
