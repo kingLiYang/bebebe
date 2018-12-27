@@ -112,24 +112,38 @@
 
                 </tr>
                 <tr>
-                    <td class='table_td'>发货人</td>
+                    <td class='table_td'>货物名称</td>
                     <td>1</td>
-                    <td class='table_td'>发货人电话</td>
-                    <td>1</td>
-
-                </tr>
-                <tr>
-                    <td class='table_td'>收货人</td>
-                    <td>1</td>
-                    <td class='table_td'>收货人电话</td>
+                    <td class='table_td'>计费重量</td>
                     <td>1</td>
 
                 </tr>
                 <tr>
-                    <td class='table_td'>发货人地址</td>
+                    <td class='table_td'>始发城市</td>
+                    <td>1</td>
+                    <td class='table_td'>目的城市</td>
                     <td>1</td>
 
-                    <td class='table_td'>收货人地址</td>
+                </tr>
+                <tr>
+                    <td class='table_td'>温度计使用</td>
+                    <td>1</td>
+
+                    <td class='table_td'>件数</td>
+                    <td>1</td>
+                </tr>
+                <tr>
+                    <td class='table_td'>签收人</td>
+                    <td>1</td>
+
+                    <td class='table_td'>温度区间</td>
+                    <td>1</td>
+                </tr>
+                <tr>
+                    <td class='table_td'>签收时间</td>
+                    <td>1</td>
+
+                    <td class='table_td'>委托时间</td>
                     <td>1</td>
                 </tr>
             </table>
