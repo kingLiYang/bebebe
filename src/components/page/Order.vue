@@ -31,8 +31,6 @@
                   <el-option key="1" label="已审核" value="0"></el-option>
                 </el-select>
               </el-form-item>
-
-              
             </el-col>
             <el-col>
               <el-form-item label="下单时间">
@@ -45,6 +43,7 @@
                   range-separator="至"
                   start-placeholder="开始日期"
                   end-placeholder="结束日期"
+          
                 ></el-date-picker>
               </el-form-item>
               <el-form-item label="发货时间">
@@ -57,11 +56,11 @@
                   range-separator="至"
                   start-placeholder="开始日期"
                   end-placeholder="结束日期"
+                
                 ></el-date-picker>
               </el-form-item>
-               <el-button type="primary" icon="search" @click="getData">搜索</el-button>
+              <el-button type="primary" icon="search" @click="getData">搜索</el-button>
             </el-col>
-           
           </el-row>
         </el-form>
 
@@ -71,7 +70,14 @@
           </el-select>
         <el-input v-model="select_word" placeholder="筛选关键词" class="handle-input mr10"></el-input>-->
       </div>
-      <el-table :data="tableData" border style="width: 100%" ref="multipleTable">
+      <el-table
+        :data="tableData"
+        border
+        style="width: 100%"
+        ref="multipleTable"
+        @selection-change="handleSelectionChange"
+      >
+        <el-table-column type="selection" width="60" align="center"></el-table-column>
         <el-table-column type="index" width="50" label="序号" align="center"></el-table-column>
         <el-table-column prop="order_code" label="订单号" align="center"></el-table-column>
         <el-table-column prop="addtime" label="下单时间" align="center" :formatter="addtimesta"></el-table-column>
@@ -115,9 +121,6 @@ export default {
       send_goods_name: "",
       get_goods_name: "",
       tableData: [],
-      optionsZhan: [], // 用户添加所需的职务
-      title: "添加用户",
-      editVisible: false,
       delVisible: false,
       form: {
         accout: "",
@@ -128,14 +131,14 @@ export default {
         phone: "",
         email: ""
       },
-      u_id: "",
       cur_page: 1,
-      data2: [],
-      data3: [],
+      del_id: [],// 删除id
+      id:"", // 详情id
       ccc: 0,
       token: "",
-      value4: ["",""],
-      value5: ["",""],
+      value4: [],
+      multipleSelection: [],
+      value5: [],
       pickerOptions2: {
         shortcuts: [
           {
@@ -174,6 +177,10 @@ export default {
     this.getData();
   },
   methods: {
+    handleSelectionChange(val) {
+      // 选中的  当前条 数据
+      this.multipleSelection = val;
+    },
     // 分页导航
     handleCurrentChange(val) {
       this.cur_page = val;
@@ -185,6 +192,14 @@ export default {
       // if (process.env.NODE_ENV === 'development') {
       //     this.url = '/ms/table/list';
       // };
+      
+      if(this.value5 == null){
+        this.value5 = ["",""];
+      }
+      if(this.value4 == null){
+        this.value4 = ["",""];
+      }
+
       this.$axios
         .post(
           this.URL_API + "/berry/public/index.php/init_order/index",
@@ -194,10 +209,10 @@ export default {
             status: this.select_cate, // 0 未审核 1 已审核
             send_goods_name: this.send_goods_name, // 发货人
             get_goods_name: this.get_goods_name, // 收货人
-            start_addtime: this.value4[0], // 下单开始时间
-            end_addtime: this.value4[1], // 下单结束时间
-            start_send_goods_time: this.value5[0], // 发货开始时间
-            end_send_goods_time: this.value5[1], // 发货结束时间
+            start_addtime: this.value4[0] || '', // 下单开始时间
+            end_addtime: this.value4[1] || '', // 下单结束时间
+            start_send_goods_time: this.value5[0] || '', // 发货开始时间
+            end_send_goods_time: this.value5[1] || '', // 发货结束时间
             token: this.token
           },
           {
@@ -282,53 +297,40 @@ export default {
     handleAdd() {
       this.$router.push("/add_order");
     },
-    handleDetails(){
-      // 详情 http://www.zjcoldcloud.com/berry/public/index.php/user/get_check_user
-            this.$axios
-        .post(
-          this.URL_API + "/berry/public/index.php/user/get_check_user",
-          {
-            token: this.token
-          },
-          {
-            transformRequest: [
-              function(data) {
-                let ret = "";
-                for (let it in data) {
-                  ret +=
-                    encodeURIComponent(it) +
-                    "=" +
-                    encodeURIComponent(data[it]) +
-                    "&";
-                }
-                return ret;
-              }
-            ]
-          }
-        )
-        .then(res => {
-          // if (res.data.code == 0) {
-          //   this.tableData = res.data.data.data;
+    handleDetails() {
+      let len = this.multipleSelection;
+      // 订单  详情
+      if (len.length == 1) {
+        
+        this.id = len[0].o_id;
+        this.$router.push({path:"/details_order",query:{id: this.id}});
 
-          //   this.ccc = res.data.data.count;
-          // } else {
-          //   this.tableData = [];
-          //   this.ccc = 1;
-          //   this.$message.error(res.data.message);
-          // }
-        });
-
+      } else if (len.length == 0) {
+        this.$message.error("请选择订单");
+      } else {
+        this.$message.error("请选择单个订单查看");
+      }
     },
-    handleDel(index, row) {
+    handleDel() {
       // 删除 弹框 二次确认
-      this.u_id = row.u_id;
-      this.delVisible = true;
+      let len = this.multipleSelection;
+      if (len.length == 0) {
+        this.$message.error("请选择要删除的订单");
+      } else {
+        this.del_id = [];
+        let len = this.multipleSelection;
+        for (let i = 0; i < len.length; i++) {
+          this.del_id.push(len[i].o_id);
+        }
+
+        this.delVisible = true;
+      }
     },
     // 确定删除
     deleteRow() {
       this.$axios
-        .post(this.URL_API + "/berry/public/index.php/user/del", {
-          id: this.u_id,
+        .post(this.URL_API + "/berry/public/index.php/init_order/del", {
+          id: this.del_id.join(","),
           token: this.token
         })
         .then(res => {

@@ -95,6 +95,14 @@ export default new Router({
                         title: '订单添加'
                     }
                 },
+                // init_order 订单详情
+                {
+                    path: '/details_order',
+                    component: resolve => require(['../components/page/orderDetails.vue'], resolve),
+                    meta: {
+                        title: '订单详情'
+                    }
+                },
 
 
                 /************************************************************************** */

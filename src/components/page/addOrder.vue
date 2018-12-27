@@ -16,15 +16,30 @@
               <el-input v-model="order_num"></el-input>
             </el-form-item>
             <el-form-item label="发货时间">
-              <el-input v-model="ask_time"></el-input>
+              <!-- <el-input v-model="ask_time"></el-input> -->
+                  <el-date-picker
+                    v-model="ask_time"
+                    value-format="yyyy-MM-dd HH:mm:ss"
+                    type="datetime"
+                    placeholder="选择日期时间">
+                  </el-date-picker>
             </el-form-item>
             <el-form-item label="时限">
               <!-- <el-input v-model="limit"></el-input> -->
               <el-select placeholder="请选择" class="handle-select mr10" v-model="limit">
                 <el-option label="请选择" value></el-option>
-                <el-option label="-25℃~-15℃" value="-25℃~-15℃"></el-option>
-                <el-option label="2℃~8℃" value="2℃~8℃"></el-option>
-                <el-option label="15℃~25℃" value="15℃~25℃"></el-option>
+                <el-option label="12" value="12"></el-option>
+                <el-option label="24" value="24"></el-option>
+                <el-option label="36" value="36"></el-option>
+                <el-option label="48" value="48"></el-option>
+                <el-option label="72" value="72"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="审核人">
+              <!-- <el-input v-model="limit"></el-input> optionsStatus -->
+              <el-select placeholder="请选择" class="handle-select mr10" v-model="statusMan">
+                <el-option label="请选择" value></el-option>
+                <el-option :label="item.relly_name" :value="item.u_id" v-for="(item,index) in optionsStatus" :key="index"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -49,8 +64,7 @@
             </el-form-item>
             <el-form-item label="是否使用温度计">
               <!-- <el-input v-model="limit"></el-input> -->
-              <el-select placeholder="请选择" class="handle-select mr10" v-model="ite.is_thermometer">
-                <el-option label="请选择" value></el-option>
+              <el-select placeholder="请选择" class="handle-select mr10" v-model="ite.is_thermomete">
                 <el-option label="是" value="1"></el-option>
                 <el-option label="否" value="0"></el-option>
               </el-select>
@@ -67,15 +81,15 @@
             <span style="font-weight:800;">药品信息</span>
             <el-form label-width="100px" :inline="true" style="padding:10px 0 0 0;">
               <el-form-item label="型号">
-                <el-input size="medium" v-model="item.model"></el-input>
+                <el-input size="medium" v-model="item.model" disabled></el-input>
               </el-form-item>
               <el-form-item label="保价金额">
                 <el-col>
-                  <el-input v-model="item.support"></el-input>
+                  <el-input v-model="item.support" disabled></el-input>
                 </el-col>
               </el-form-item>
               <el-form-item label="储运温度">
-                <el-select placeholder="请选择" class="handle-select mr10" v-model="item.temperature">
+                <el-select placeholder="请选择" class="handle-select mr10" v-model="item.temperature" disabled>
                   <el-option label="请选择" value></el-option>
                   <el-option label="-25℃~-15℃" value="-25℃~-15℃"></el-option>
                   <el-option label="2℃~8℃" value="2℃~8℃"></el-option>
@@ -83,16 +97,16 @@
                 </el-select>
               </el-form-item>
               <el-form-item label="尺寸">
-                <el-input v-model="item.size"></el-input>
+                <el-input v-model="item.size" disabled></el-input>
               </el-form-item>
               <el-form-item label="品名">
-                <el-input v-model="item.trade_name"></el-input>
+                <el-input v-model="item.trade_name" disabled></el-input>
               </el-form-item>
               <el-form-item label="放置方式">
-                <el-input v-model="item.placement_mode"></el-input>
+                <el-input v-model="item.placement_mode" disabled></el-input>
               </el-form-item>
               <el-form-item label="规格">
-                <el-input v-model="item.standard"></el-input>
+                <el-input v-model="item.standard" disabled></el-input>
               </el-form-item>
             </el-form>
           </li>
@@ -168,12 +182,16 @@ export default {
       order_num: "",
       ask_time: "",
       limit: "",
+      statusMan:"",// 审核人
+      optionsStatus:[],
+      send_id:"",
+      get_id:"",
       isShow: false,
       drug_data: [
         {
           art_no: "", // 货号
           art_num: "", // 数量
-          is_thermometer: "", // 是否使用温度计
+          is_thermomete: "是", // 是否使用温度计
           drug_list: [] // 药品信息
         }
       ],
@@ -201,13 +219,47 @@ export default {
   },
   created() {
     this.token = window.sessionStorage.getItem("token");
+    this.getStatus(); // 获取审核人
   },
   methods: {
+    getStatus(){
+      // 获取审核人
+      this.$axios
+        .post(
+          this.URL_API + "/berry/public/index.php/user/get_check_user",
+          {
+            token: this.token
+          },
+          {
+            transformRequest: [
+              function(data) {
+                let ret = "";
+                for (let it in data) {
+                  ret +=
+                    encodeURIComponent(it) +
+                    "=" +
+                    encodeURIComponent(data[it]) +
+                    "&";
+                }
+                return ret;
+              }
+            ]
+          }
+        )
+        .then(res => {
+          if (res.data.code == 0) {
+            this.optionsStatus = res.data.data;
+
+          } else {
+            this.$message.error(res.data.message);
+          }
+        });
+    },
     add_drug() {
       let obj = {
         art_no: "", // 货号
         art_num: "", // 数量
-        is_thermometer: "", // 是否使用温度计
+        is_thermomete: "是", // 是否使用温度计
         drug_list: [] // 药品信息
       };
       this.drug_data.push(obj);
@@ -294,7 +346,9 @@ export default {
           )
           .then(res => {
             if (res.data.code == 0) {
+              
               let data = res.data.data.data[0];
+              this.send_id = data.id;
               // this.send.name = res.data.data[0].username;
               this.send.phone = data.phone;
               this.send.name = data.username;
@@ -342,9 +396,9 @@ export default {
           .then(res => {
             if (res.data.code == 0) {
               let data = res.data.data.data[0];
-
-			  this.receive.phone = data.phone;
-            //   this.receive.name = data.username;
+              this.get_id = data.id;
+              this.receive.phone = data.phone;
+              //   this.receive.name = data.username;
               this.receive.company = data.company;
               this.receive.provice = data.province;
               this.receive.city = data.city;
@@ -357,44 +411,48 @@ export default {
       }
     },
     addReturn() {
-      this.$router.push("/drug");
+      this.$router.push("/initOrder");
     },
     addCommit() {
+      const Qs = require('qs');
+      let arr = [];
+      this.drug_data.forEach(item=>{
+        arr.push(item);
+      })
+      arr.forEach(item=>{
+        if(item.is_thermomete == '是'){
+          item.is_thermometer = '1';
+        }else{
+          item.is_thermometer = item.is_thermomete;
+        }
+        delete item.is_thermomete;
+        delete item.drug_list;
+      })
       this.$axios
         .post(
-          this.URL_API + "/berry/public/index.php/drug/add",
+          this.URL_API + "/berry/public/index.php/init_order/add",
           {
-            order_code: data, // 订单号
-            send_goods_time:"", // 发货时间
-            time_limit:"", // 时限
-            check_order_admin:"", // 审核人员
-            support_value:"", // 保价金额
-            send_goods_address: "", // 发货地址id
-            get_goods_address:"", // 收货地址id
-            goods:"", // 货号信息  数组
-            o_id:"", // 修改必传  添加无所谓
+            order_code: this.order_num, // 订单号
+            send_goods_time: this.ask_time, // 发货时间
+            time_limit: this.limit, // 时限
+            check_order_admin: this.statusMan, // 审核人员
+            send_goods_address: this.send_id, // 发货地址id
+            get_goods_address: this.get_id, // 收货地址id
+            goods: arr, // 货号信息  数组
+            o_id: "", // 修改必传  添加无所谓
             token: this.token
           },
-          {
-            transformRequest: [
-              function(data) {
-                let ret = "";
-                for (let it in data) {
-                  ret +=
-                    encodeURIComponent(it) +
-                    "=" +
-                    encodeURIComponent(data[it]) +
-                    "&";
-                }
-                return ret;
-              }
-            ]
-          }
+           {transformRequest: [function (data) {
+              data = Qs.stringify(data);
+              return data;
+          }]},
+      // #设置Content-Type
+          {headers:{'Content-Type':'application/x-www-form-urlencoded'}}
         )
         .then(res => {
           if (res.data.code == 0) {
             this.$message.success("添加成功");
-            this.$router.push("/drug");
+            this.$router.push("/initOrder");
           } else {
             this.$message.error(res.data.message);
           }
