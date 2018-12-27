@@ -104,6 +104,13 @@ export default new Router({
                     }
                 },
 
+                {
+                    path: '/InitWayBill',
+                    component: resolve => require(['../components/page/Waybill.vue'], resolve),
+                    meta: {
+                        title: '运单管理'
+                    }
+                },
 
                 /************************************************************************** */
                 {
