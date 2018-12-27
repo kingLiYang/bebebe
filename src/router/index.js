@@ -95,7 +95,13 @@ export default new Router({
                         title: '订单添加'
                     }
                 },
-
+                {
+                    path: '/initWaybill',
+                    component: resolve => require(['../components/page/Waybill.vue'], resolve),
+                    meta: {
+                        title: '运单管理'
+                    }
+                },
 
                 /************************************************************************** */
                 {
