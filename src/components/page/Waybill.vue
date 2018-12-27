@@ -92,10 +92,53 @@
             <el-form ref="form" :model="form">
                     <el-input v-model="company" style="width: 60px;"></el-input>
             </el-form>
+
             <span slot="footer" class="dialog-footer">
-        <el-button @click="editVisible = false">返 回</el-button>
-        <el-button type="primary" @click="saveEdit">提 交</el-button>
-      </span>
+
+            <el-button @click="editVisible = false">返 回</el-button>
+            <el-button type="primary" @click="saveEdit">提 交</el-button>
+           </span>
+        </el-dialog>
+
+
+        <!-- 资料签收弹出框 -->
+        <el-dialog :title="title" :visible.sync="qianshouVisible" width="50%" >
+            <table v-model="TMSorder">
+                <tr>
+                    <td class='table_td'>运单号</td>
+                    <td>111111111</td>
+                    <td class='table_td'>实际重量</td>
+                    <td>111111111</td>
+
+                </tr>
+                <tr>
+                    <td class='table_td'>发货人</td>
+                    <td>1</td>
+                    <td class='table_td'>发货人电话</td>
+                    <td>1</td>
+
+                </tr>
+                <tr>
+                    <td class='table_td'>收货人</td>
+                    <td>1</td>
+                    <td class='table_td'>收货人电话</td>
+                    <td>1</td>
+
+                </tr>
+                <tr>
+                    <td class='table_td'>发货人地址</td>
+                    <td>1</td>
+
+                    <td class='table_td'>收货人地址</td>
+                    <td>1</td>
+                </tr>
+            </table>
+
+            <span slot="footer" class="dialog-footer">
+
+            <el-button @click="qianshouVisible = false">返 回</el-button>
+            <el-button type="primary" @click="saveEdit">提 交</el-button>
+           </span>
         </el-dialog>
 
 
@@ -112,8 +155,10 @@
                 Thermometer_number:"",
                 select_cate: "",
                 tableData: [],
+                TMSorder:"",
                 editVisible:false,
                 title: "温度信息",
+                qianshouVisible:false,
 
                 company:'ee',
                 form: {
@@ -235,9 +280,11 @@
             NodeInformation(){
 
             },
+
             SignPictures(){
 
-
+                this.title = "资料&签收图";
+                this.qianshouVisible = true;
             },
             WaybillTrajectory(){
 
@@ -306,12 +353,22 @@
         width: 120px;
     }
 
-    .handle-input {
-        width: 300px;
-        display: inline-block;
-    }
-    .del-dialog-cnt {
-        font-size: 16px;
+
+    td,
+    th {
+        border: solid #ccc;
+        border-width: 0px 1px 1px 0px;
+        padding: 10px 0px;
         text-align: center;
+    }
+
+    table {
+        border: solid #ccc;
+        border-width: 1px 0px 0px 1px;
+        border-collapse: collapse;
+        width: 100%;
+    }
+    .table_td {
+        background-color: #eff4f6;
     }
 </style>
