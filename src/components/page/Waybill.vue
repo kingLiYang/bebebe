@@ -96,7 +96,7 @@
             <span slot="footer" class="dialog-footer">
 
             <el-button @click="editVisible = false">返 回</el-button>
-            <el-button type="primary" @click="saveEdit">提 交</el-button>
+
            </span>
         </el-dialog>
 
@@ -151,7 +151,7 @@
             <span slot="footer" class="dialog-footer">
 
             <el-button @click="qianshouVisible = false">返 回</el-button>
-            <el-button type="primary" @click="saveEdit">提 交</el-button>
+
            </span>
         </el-dialog>
 
@@ -164,16 +164,14 @@
     export default {
         data() {
             return {
-                // url: './static/vuetable.json',
+
                 Waybill_number: "",
                 Thermometer_number:"",
                 select_cate: "",
                 tableData: [],
-                TMSorder:"",
                 editVisible:false,
                 title: "温度信息",
                 qianshouVisible:false,
-
                 company:'ee',
                 form: {
                     Waybill_number: "",
@@ -185,6 +183,7 @@
                 ccc: 0,
                 token: "",
                 value4: [],
+                multipleSelection: [],
 
                 pickerOptions2: {
                     shortcuts: [
@@ -253,10 +252,9 @@
                             Thermometer_number:this.Thermometer_number,
                             start_addtime: this.value4[0] || '', // 下单开始时间
                             end_addtime: this.value4[1] || '', // 下单结束时间
-
                             token: this.token
                         },
-                        {
+                         {
                             transformRequest: [
                                 function(data) {
                                     let ret = "";
@@ -288,12 +286,20 @@
                 return row.status == 1 ? "启用" : "禁用";
             },
             temperatureInformation() {
-                this.title = "温度信息";
-                this.editVisible = true;
-            },
-            saveEdit(){
+                let len = this.multipleSelection;
 
+                if (len.length == 1) {
+                    this.id = len[0].id;
+                    // 获取温度信息数据
+                    this.title = "温度信息";
+                    this.editVisible = true;
+                } else if (len.length == 0) {
+                    this.$message.error("请选择温度信息");
+                } else {
+                    this.$message.error("请选择单个数据");
+                }
             },
+
             NodeInformation(){
 
             },
