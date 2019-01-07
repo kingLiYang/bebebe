@@ -80,7 +80,7 @@ export default {
           });
       }
 
-      console.log(this.tagsList);
+      // console.log(this.tagsList);
     },
     handleTags(command) {
       command === "other" ? this.closeOther() : this.closeAll();

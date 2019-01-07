@@ -38,7 +38,7 @@
           </el-select>
         <el-input v-model="select_word" placeholder="筛选关键词" class="handle-input mr10"></el-input>-->
       </div>
-      <el-table :data="tableData" border style="width: 100%" ref="multipleTable">
+      <el-table :data="tableData" border style="width: 100%" ref="multipleTable" v-loading="loading2" >
         <el-table-column type="index" width="50" label="序号" align="center"></el-table-column>
         <el-table-column prop="account" label="账户名" align="center"></el-table-column>
 
@@ -46,7 +46,13 @@
         <el-table-column prop="name" label="职务" align="center"></el-table-column>
         <el-table-column prop="phone" label="联系电话" align="center"></el-table-column>
         <el-table-column prop="email" label="邮箱" align="center" width="150"></el-table-column>
-        <el-table-column prop="addtime" label="添加时间" align="center" :formatter="timesta" width="150"></el-table-column>
+        <el-table-column
+          prop="addtime"
+          label="添加时间"
+          align="center"
+          :formatter="timesta"
+          width="150"
+        ></el-table-column>
         <el-table-column prop="region" label="地区" align="center"></el-table-column>
         <el-table-column prop="status" label="使用状态" align="center" :formatter="formatter"></el-table-column>
 
@@ -135,6 +141,7 @@
 export default {
   data() {
     return {
+      loading2: true,
       // url: './static/vuetable.json',
       accout: "",
       name: "",
@@ -182,13 +189,15 @@ export default {
       //     this.url = '/ms/table/list';
       // };
       this.$axios
-        .post(this.URL_API + "/berry/public/index.php/user/index", {
-          page: this.cur_page,
-          account: this.accout,
-          relly_name: this.name,
-          status: this.select_cate,
-          token: this.token
-        },
+        .post(
+          this.URL_API + "/berry/public/index.php/user/index",
+          {
+            page: this.cur_page,
+            account: this.accout,
+            relly_name: this.name,
+            status: this.select_cate,
+            token: this.token
+          },
           {
             transformRequest: [
               function(data) {
@@ -203,42 +212,51 @@ export default {
                 return ret;
               }
             ]
-          })
+          }
+        )
         .then(res => {
-
           this.tableData = res.data.data.data;
           this.ccc = res.data.data.count;
+          this.loading2 = false;
+          if(res.data.code == 0){
+          this.tableData = res.data.data.data;
+          this.ccc = res.data.data.count;
+          this.loading2 = false;
+          }else if(res.data.code == 450){
+            this.$message.success("登录时间过长，请重新登录");
+            this.$router.push("/login");
+          }
         });
     },
     formatter(row, column) {
       return row.status == 1 ? "启用" : "禁用";
-
     },
     timesta(row, column) {
-
-        if (row.addtime == null) {
-            return "暂无";
-        } else {
-            let date = new Date(parseInt(row.addtime) * 1000);
-            let Y = date.getFullYear() + "-";
-            let M =
-                date.getMonth() + 1 < 10
-                    ? "0" + (date.getMonth() + 1) + "-"
-                    : date.getMonth() + 1 + "-";
-            let D =
-                date.getDate() < 10 ? "0" + date.getDate() + " " : date.getDate() + " ";
-            let h =
-                date.getHours() < 10
-                    ? "0" + date.getHours() + ":"
-                    : date.getHours() + ":";
-            let m =
-                date.getMinutes() < 10
-                    ? "0" + date.getMinutes() + ":"
-                    : date.getMinutes() + ":";
-            let s =
-                date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds();
-            return Y + M + D + h + m + s;
-        }
+      if (row.addtime == null) {
+        return "暂无";
+      } else {
+        let date = new Date(parseInt(row.addtime) * 1000);
+        let Y = date.getFullYear() + "-";
+        let M =
+          date.getMonth() + 1 < 10
+            ? "0" + (date.getMonth() + 1) + "-"
+            : date.getMonth() + 1 + "-";
+        let D =
+          date.getDate() < 10
+            ? "0" + date.getDate() + " "
+            : date.getDate() + " ";
+        let h =
+          date.getHours() < 10
+            ? "0" + date.getHours() + ":"
+            : date.getHours() + ":";
+        let m =
+          date.getMinutes() < 10
+            ? "0" + date.getMinutes() + ":"
+            : date.getMinutes() + ":";
+        let s =
+          date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds();
+        return Y + M + D + h + m + s;
+      }
     },
     handleAdd() {
       this.title = "添加用户";
@@ -274,22 +292,21 @@ export default {
         token: this.token
       };
       this.$axios
-        .post(this.URL_API + "/berry/public/index.php/user/add", webData,
-          {
-            transformRequest: [
-              function(data) {
-                let ret = "";
-                for (let it in data) {
-                  ret +=
-                    encodeURIComponent(it) +
-                    "=" +
-                    encodeURIComponent(data[it]) +
-                    "&";
-                }
-                return ret;
+        .post(this.URL_API + "/berry/public/index.php/user/add", webData, {
+          transformRequest: [
+            function(data) {
+              let ret = "";
+              for (let it in data) {
+                ret +=
+                  encodeURIComponent(it) +
+                  "=" +
+                  encodeURIComponent(data[it]) +
+                  "&";
               }
-            ]
-          })
+              return ret;
+            }
+          ]
+        })
         .then(res => {
           // this.tableData = res.data.data;
           if (res.data.code == 0) {
@@ -301,6 +318,9 @@ export default {
             }
 
             this.getData();
+          }else if(res.data.code == 450){
+            this.$message.success("登录时间过长，请重新登录");
+            this.$router.push("/login");
           } else {
             this.$message.error(res.data.message);
           }
@@ -311,10 +331,12 @@ export default {
       this.getzhiwu();
       // 修改 用户 默认获取数据
       this.$axios
-        .post(this.URL_API + "/berry/public/index.php/user/update", {
-          u_id: this.u_id,
-          token: this.token
-        },
+        .post(
+          this.URL_API + "/berry/public/index.php/user/update",
+          {
+            u_id: this.u_id,
+            token: this.token
+          },
           {
             transformRequest: [
               function(data) {
@@ -329,7 +351,8 @@ export default {
                 return ret;
               }
             ]
-          })
+          }
+        )
         .then(res => {
           let data = res.data;
           if (data.code == 0) {
@@ -344,6 +367,9 @@ export default {
             this.title = "修改用户";
             this.isShow = false;
             this.editVisible = true;
+          }else if(res.data.code == 450){
+            this.$message.success("登录时间过长，请重新登录");
+            this.$router.push("/login");
           }
         });
     },
@@ -355,10 +381,12 @@ export default {
     // 确定删除
     deleteRow() {
       this.$axios
-        .post(this.URL_API + "/berry/public/index.php/user/del", {
-          id: this.u_id,
-          token: this.token
-        },
+        .post(
+          this.URL_API + "/berry/public/index.php/user/del",
+          {
+            id: this.u_id,
+            token: this.token
+          },
           {
             transformRequest: [
               function(data) {
@@ -373,22 +401,28 @@ export default {
                 return ret;
               }
             ]
-          })
+          }
+        )
         .then(res => {
           let data = res.data;
           if (data.code == 0) {
             this.$message.success("删除成功");
             this.delVisible = false;
             this.getData();
+          }else if(res.data.code == 450){
+            this.$message.success("登录时间过长，请重新登录");
+            this.$router.push("/login");
           }
         });
     },
     getzhiwu() {
       // 获取职务  用户添加 需要
       this.$axios
-        .post(this.URL_API + "/berry/public/index.php/role/index", {
-          token: this.token
-        },
+        .post(
+          this.URL_API + "/berry/public/index.php/role/index",
+          {
+            token: this.token
+          },
           {
             transformRequest: [
               function(data) {
@@ -403,12 +437,16 @@ export default {
                 return ret;
               }
             ]
-          })
+          }
+        )
         .then(res => {
           let data = res.data;
           if (data.code == 0) {
             this.optionsZhan = data.data;
             this.optionsZhan.unshift({ name: "请选择", r_id: "" });
+          }else if(res.data.code == 450){
+            this.$message.success("登录时间过长，请重新登录");
+            this.$router.push("/login");
           }
         });
     },
@@ -421,11 +459,13 @@ export default {
         sta = 0;
       }
       this.$axios
-        .post(this.URL_API + "/berry/public/index.php/user/checkStatus", {
-          u_id: row.u_id,
-          status: sta,
-          token: this.token
-        },
+        .post(
+          this.URL_API + "/berry/public/index.php/user/checkStatus",
+          {
+            u_id: row.u_id,
+            status: sta,
+            token: this.token
+          },
           {
             transformRequest: [
               function(data) {
@@ -440,12 +480,16 @@ export default {
                 return ret;
               }
             ]
-          })
+          }
+        )
         .then(res => {
           let data = res.data;
           if (data.code == 0) {
             this.$message.success("状态修改成功");
             this.getData();
+          }else if(res.data.code == 450){
+            this.$message.success("登录时间过长，请重新登录");
+            this.$router.push("/login");
           }
         });
     }

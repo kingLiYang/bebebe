@@ -95,6 +95,14 @@ export default new Router({
                         title: '订单添加'
                     }
                 },
+                // init_order 订单修改
+                {
+                    path: '/edit_order',
+                    component: resolve => require(['../components/page/orderEdit.vue'], resolve),
+                    meta: {
+                        title: '订单修改'
+                    }
+                },
                 // init_order 订单详情
                 {
                     path: '/details_order',
@@ -103,7 +111,7 @@ export default new Router({
                         title: '订单详情'
                     }
                 },
-
+                // 运单管理
                 {
                     path: '/InitWayBill',
                     component: resolve => require(['../components/page/Waybill.vue'], resolve),

@@ -41,6 +41,7 @@
         style="width: 100%"
         ref="multipleTable"
         @selection-change="handleSelectionChange"
+        v-loading="loading"
       >
         <el-table-column type="selection" width="60" align="center"></el-table-column>
         <el-table-column type="index" width="50" label="序号" align="center"></el-table-column>
@@ -132,6 +133,7 @@
 export default {
   data() {
     return {
+      loading: true,
       model: "",
       edit_art_no: "",
       art_no: "",
@@ -202,11 +204,18 @@ export default {
             ]
           })
         .then(res => {
+          if(res.data.code == 0){
           this.tableData = res.data.data.data;
           for (let i = 0; i < this.tableData.length; i++) {
             this.tableData[i].danwei = "盒";
           }
           this.ccc = res.data.data.count;
+          this.loading = false;
+          }else if(res.data.code == 450){
+            this.$message.success("登录时间过长，请重新登录");
+            this.$router.push("/login");
+          }
+
         });
     },
     handleEdit() {
@@ -248,7 +257,10 @@ export default {
 
               this.title = "修改试剂";
               this.editVisible = true;
-            }
+            }else if(res.data.code == 450){
+            this.$message.success("登录时间过长，请重新登录");
+            this.$router.push("/login");
+          }
           });
       } else if (len.length == 0) {
         this.$message.error("请选择要修改的权限");
@@ -294,6 +306,9 @@ export default {
             this.editVisible = false;
             this.$message.success("修改成功");
             this.getData();
+          }else if(res.data.code == 450){
+            this.$message.success("登录时间过长，请重新登录");
+            this.$router.push("/login");
           } else {
             this.$message.error(res.data.message);
           }
@@ -341,6 +356,9 @@ export default {
             this.$message.success("删除成功");
             this.delVisible = false;
             this.getData();
+          }else if(res.data.code == 450){
+            this.$message.success("登录时间过长，请重新登录");
+            this.$router.push("/login");
           }
         });
     }

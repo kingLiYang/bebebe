@@ -27,6 +27,7 @@
         :cell-style="cellStyle"
         ref="multipleTable"
         @selection-change="handleSelectionChange"
+        v-loading="loading"
       >
         <el-table-column type="selection" width="60" align="center"></el-table-column>
         <el-table-column type="index" width="100" label="序号" align="center"></el-table-column>
@@ -85,6 +86,7 @@
 export default {
   data() {
     return {
+      loading:true,
       // url: './static/vuetable.json',
       clickOne: false,
       tableData: [],
@@ -161,7 +163,14 @@ export default {
             ]
           })
         .then(res => {
+          if(res.data.code == 0){
           this.tableData = res.data.data;
+          this.loading = false;
+          }else if(res.data.code == 450){
+            this.$message.success("登录时间过长，请重新登录");
+            this.$router.push("/login");
+          }
+
         });
     },
     formatter(row, column) {
@@ -266,6 +275,9 @@ export default {
 
             this.editVisible = false;
             this.getData();
+          }else if(res.data.code == 450){
+            this.$message.success("登录时间过长，请重新登录");
+            this.$router.push("/login");
           } else {
             this.$message.error(res.data.message);
           }
@@ -312,7 +324,10 @@ export default {
               this.form.icon = data.data.icon;
               this.title = "修改权限";
               this.editVisible = true;
-            }
+            }else if(res.data.code == 450){
+            this.$message.success("登录时间过长，请重新登录");
+            this.$router.push("/login");
+          }
           });
       } else if (len.length == 0) {
         this.$message.error("请选择要修改的权限");
@@ -362,6 +377,9 @@ export default {
             this.$message.success("删除成功");
             this.delVisible = false;
             this.getData();
+          }else if(res.data.code == 450){
+            this.$message.success("登录时间过长，请重新登录");
+            this.$router.push("/login");
           }
         });
     },

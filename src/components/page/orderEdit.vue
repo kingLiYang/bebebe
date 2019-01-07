@@ -3,7 +3,7 @@
     <div class="crumbs">
       <el-breadcrumb separator="/">
         <el-breadcrumb-item>
-          <i class="el-icon-tickets"></i> 订单添加
+          <i class="el-icon-tickets"></i> 订单修改
         </el-breadcrumb-item>
       </el-breadcrumb>
     </div>
@@ -82,7 +82,7 @@
         </div>
 
         <ul class="drug_list" v-if="isShow">
-          <li v-for="(item,index) in ite.drug_list" :key="index">
+          <li v-for="(item,index) in ite.drug" :key="index">
             <span style="font-weight:800;">药品信息</span>
             <el-form label-width="100px" :inline="true" style="padding:10px 0 0 0;">
               <el-form-item label="型号">
@@ -128,7 +128,7 @@
           <span style="font-weight:800;">发货信息</span>
           <el-form :model="send" label-width="100px" :inline="true" style="padding:10px 0 0 0;">
             <el-form-item label="发货人">
-              <el-input size="medium" @blur="get_send()" v-model="send.name"></el-input>
+              <el-input size="medium" @blur="get_send()" v-model="send.username"></el-input>
             </el-form-item>
             <el-form-item label="联系电话">
               <el-input v-model="send.phone" disabled></el-input>
@@ -137,13 +137,13 @@
               <el-input v-model="send.company" disabled></el-input>
             </el-form-item>
             <el-form-item label="省">
-              <el-input v-model="send.provice" disabled></el-input>
+              <el-input v-model="send.province" disabled></el-input>
             </el-form-item>
             <el-form-item label="市">
               <el-input v-model="send.city" disabled></el-input>
             </el-form-item>
             <el-form-item label="区">
-              <el-input v-model="send.area" disabled></el-input>
+              <el-input v-model="send.district" disabled></el-input>
             </el-form-item>
             <el-form-item label="详址">
               <el-input v-model="send.address" disabled></el-input>
@@ -154,7 +154,7 @@
           <span style="font-weight:800;">收货信息</span>
           <el-form :model="receive" label-width="100px" :inline="true" style="padding:10px 0 0 0;">
             <el-form-item label="收货人">
-              <el-input size="medium" v-model="receive.name" @blur="get_recive"></el-input>
+              <el-input size="medium" v-model="receive.username" @blur="get_recive"></el-input>
             </el-form-item>
             <el-form-item label="联系电话">
               <el-col>
@@ -165,13 +165,13 @@
               <el-input v-model="receive.company" disabled></el-input>
             </el-form-item>
             <el-form-item label="省">
-              <el-input v-model="receive.provice" disabled></el-input>
+              <el-input v-model="receive.province" disabled></el-input>
             </el-form-item>
             <el-form-item label="市">
               <el-input v-model="receive.city" disabled></el-input>
             </el-form-item>
             <el-form-item label="区">
-              <el-input v-model="receive.area" disabled></el-input>
+              <el-input v-model="receive.district" disabled></el-input>
             </el-form-item>
             <el-form-item label="详址">
               <el-input v-model="receive.address" disabled></el-input>
@@ -202,36 +202,71 @@ export default {
           art_no: "", // 货号
           art_num: "", // 数量
           is_thermomete: "是", // 是否使用温度计
-          drug_list: [] // 药品信息
+          drug: [] // 药品信息
         }
       ],
-      receive: {
-        name: "",
-        phone: "",
-        company: "",
-        provice: "",
-        city: "",
-        area: "",
-        address: ""
-      },
-      send: {
-        name: "",
-        phone: "",
-        company: "",
-        provice: "",
-        city: "",
-        area: "",
-        address: ""
-      },
+      receive: {},
+      send: {},
       token: "",
       type: ""
     };
   },
   created() {
     this.token = window.sessionStorage.getItem("token");
+    this.edit_id = window.sessionStorage.getItem("edit_id");
+    this.getUpdate(); // 获取默认数据
     this.getStatus(); // 获取审核人
   },
   methods: {
+    getUpdate() {
+      this.$axios
+        .post(
+          this.URL_API + "/berry/public/index.php/init_order/update",
+          {
+            o_id: this.edit_id,
+            token: this.token
+          },
+          {
+            transformRequest: [
+              function(data) {
+                let ret = "";
+                for (let it in data) {
+                  ret +=
+                    encodeURIComponent(it) +
+                    "=" +
+                    encodeURIComponent(data[it]) +
+                    "&";
+                }
+                return ret;
+              }
+            ]
+          }
+        )
+        .then(res => {
+          let data = res.data.data;
+          this.order_num = data.order_code;
+          this.limit = data.time_limit;
+          this.statusMan = data.check_order_admin;
+          this.send = data.send_goods_address;
+          this.receive = data.get_goods_address;
+          this.drug_data = data.drug;
+          this.isShow = true;
+
+          this.drug_data.forEach(item => {
+            if (item.is_thermometer == 1) {
+              item.is_thermomete = "是";
+            } else {
+              item.is_thermomete = "否";
+            }
+          });
+          this.send_id = data.send_goods_address.id;
+          this.get_id = data.get_goods_address.id;
+          this.ask_time = this.dateFormat(
+            data.send_goods_time,
+            "yyyy-mm-dd hh:ii:ss"
+          );
+        });
+    },
     getStatus() {
       // 获取审核人
       this.$axios
@@ -259,8 +294,11 @@ export default {
         .then(res => {
           if (res.data.code == 0) {
             this.optionsStatus = res.data.data;
+          }else if(res.data.code == 450){
+            this.$message.success("登录时间过长，请重新登录");
+            this.$router.push("/login");
           } else {
-            this.$message.error("暂无审核人信息");
+            this.$message.error(res.data.message);
           }
         });
     },
@@ -269,7 +307,7 @@ export default {
         art_no: "", // 货号
         art_num: "", // 数量
         is_thermomete: "是", // 是否使用温度计
-        drug_list: [] // 药品信息
+        drug: [] // 药品信息
       };
       this.drug_data.push(obj);
     },
@@ -316,8 +354,11 @@ export default {
           .then(res => {
             if (res.data.code == 0) {
               this.isShow = true;
-              this.drug_data[index].drug_list = res.data.data;
-            } else {
+              this.drug_data[index].drug = res.data.data;
+            }else if(res.data.code == 450){
+            this.$message.success("登录时间过长，请重新登录");
+            this.$router.push("/login");
+          } else {
               this.$message.error(res.data.message);
             }
           });
@@ -356,26 +397,19 @@ export default {
           .then(res => {
             if (res.data.code == 0) {
               let data = res.data.data.data[0];
-              if (data != undefined) {
-                this.send_id = data.id;
-                // this.send.name = res.data.data[0].username;
-                this.send.phone = data.phone;
-                this.send.name = data.username;
-                this.send.company = data.company;
-                this.send.provice = data.province;
-                this.send.city = data.city;
-                this.send.area = data.district;
-                this.send.address = data.address;
-              } else {
-                this.send.name = this.send.name;
-                this.send.phone = "";
-                this.send.company = "";
-                this.send.provice = "";
-                this.send.city = "";
-                this.send.area = "";
-                this.send.address = "";
-              }
-            } else {
+              this.send_id = data.id;
+              // this.send.name = res.data.data[0].username;
+              this.send.phone = data.phone;
+              this.send.name = data.username;
+              this.send.company = data.company;
+              this.send.provice = data.province;
+              this.send.city = data.city;
+              this.send.area = data.district;
+              this.send.address = data.address;
+            }else if(res.data.code == 450){
+            this.$message.success("登录时间过长，请重新登录");
+            this.$router.push("/login");
+          } else {
               this.$message.error(res.data.message);
             }
           });
@@ -414,24 +448,14 @@ export default {
           .then(res => {
             if (res.data.code == 0) {
               let data = res.data.data.data[0];
-              if (data != undefined) {
-                this.get_id = data.id;
-                this.receive.phone = data.phone;
-                //   this.receive.name = data.username;
-                this.receive.company = data.company;
-                this.receive.provice = data.province;
-                this.receive.city = data.city;
-                this.receive.area = data.district;
-                this.receive.address = data.address;
-              } else {
-                this.receive.phone = "";
-                this.receive.name = this.receive.name;
-                this.receive.company = "";
-                this.receive.provice = "";
-                this.receive.city = "";
-                this.receive.area = "";
-                this.receive.address = "";
-              }
+              this.get_id = data.id;
+              this.receive.phone = data.phone;
+              //   this.receive.name = data.username;
+              this.receive.company = data.company;
+              this.receive.provice = data.province;
+              this.receive.city = data.city;
+              this.receive.area = data.district;
+              this.receive.address = data.address;
             }else if(res.data.code == 450){
             this.$message.success("登录时间过长，请重新登录");
             this.$router.push("/login");
@@ -457,7 +481,7 @@ export default {
           item.is_thermometer = item.is_thermomete;
         }
         delete item.is_thermomete;
-        delete item.drug_list;
+        delete item.drug;
       });
       this.$axios
         .post(
@@ -470,7 +494,7 @@ export default {
             send_goods_address: this.send_id, // 发货地址id
             get_goods_address: this.get_id, // 收货地址id
             goods: arr, // 货号信息  数组
-            o_id: "", // 修改必传  添加无所谓
+            o_id: this.edit_id, // 修改必传  添加无所谓
             token: this.token
           },
           {
@@ -486,7 +510,7 @@ export default {
         )
         .then(res => {
           if (res.data.code == 0) {
-            this.$message.success("添加成功");
+            this.$message.success("修改成功");
             this.$router.push("/initOrder");
           }else if(res.data.code == 450){
             this.$message.success("登录时间过长，请重新登录");
@@ -495,6 +519,42 @@ export default {
             this.$message.error(res.data.message);
           }
         });
+    },
+    dateFormat: function(time, fmt = "yyyy-mm-dd hh:ii:ss") {
+      time = parseInt(time) * 1000;
+      let date = new Date(time);
+      let year = date.getFullYear();
+      let month =
+        date.getMonth() + 1 < 10
+          ? "0" + (date.getMonth() + 1)
+          : date.getMonth() + 1;
+      let day = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
+      let hours =
+        date.getHours() < 10 ? "0" + date.getHours() : date.getHours();
+      let minutes =
+        date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
+      let seconds =
+        date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds();
+      // 拼接
+      switch (fmt) {
+        case "yyyy-mm-dd hh:ii:ss":
+          return (
+            year +
+            "-" +
+            month +
+            "-" +
+            day +
+            " " +
+            hours +
+            ":" +
+            minutes +
+            ":" +
+            seconds
+          );
+          break;
+        default:
+          return year + "-" + month + "-" + day;
+      }
     }
   }
 };

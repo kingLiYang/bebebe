@@ -67,6 +67,7 @@ export default {
         .then(res => {
           if (res.data.code == 0) {
             window.sessionStorage.setItem("username", this.ruleForm.username);
+            window.sessionStorage.setItem("role_name", res.data.data.role_name);
             window.sessionStorage.setItem("token", res.data.data.token);
 
             this.$router.push({ path: "/" });
