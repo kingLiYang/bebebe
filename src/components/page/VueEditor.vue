@@ -18,7 +18,7 @@
         <!-- <el-button type="primary" icon="search" @click="search">搜索</el-button> -->
         <el-button type="primary" @click="handleAdd()">添加</el-button>
       </div>
-      <el-table :data="tableData" border style="width: 100%" ref="multipleTable">
+      <el-table :data="tableData" border style="width: 100%" ref="multipleTable" v-loading="loading">
         <el-table-column type="index" width="100" label="序号" align="center"></el-table-column>
         <el-table-column prop="department" label="部门" align="center"></el-table-column>
         <el-table-column prop="name" label="职务" align="center"></el-table-column>
@@ -85,6 +85,7 @@
 export default {
   data() {
     return {
+      loading: true,
       // url: './static/vuetable.json',
       tableData: [],
       title: "添加职务",
@@ -134,7 +135,14 @@ export default {
             ]
           })
         .then(res => {
+          if(res.data.code == 0){
           this.tableData = res.data.data;
+          this.loading = false;
+          }else if(res.data.code == 450){
+            this.$message.success("登录时间过长，请重新登录");
+            this.$router.push("/login");
+          }
+
         });
     },
     handleAdd() {
@@ -187,6 +195,9 @@ export default {
 
             
             this.getData();
+          }else if(res.data.code == 450){
+            this.$message.success("登录时间过长，请重新登录");
+            this.$router.push("/login");
           }
         });
     },
@@ -220,6 +231,9 @@ export default {
             this.form.options = data.data.department;
             this.title = "修改职务";
             this.editVisible = true;
+          }else if(res.data.code == 450){
+            this.$message.success("登录时间过长，请重新登录");
+            this.$router.push("/login");
           }
         });
     },
@@ -282,7 +296,10 @@ export default {
                 this.data2 = res.data.data.all;
                 this.data3 = res.data.data.default;
                 this.allotVisible = true;
-            }
+            }else if(res.data.code == 450){
+            this.$message.success("登录时间过长，请重新登录");
+            this.$router.push("/login");
+          }
         })
     },
     // 分配菜单 提交 

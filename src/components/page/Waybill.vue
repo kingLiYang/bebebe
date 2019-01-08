@@ -16,8 +16,8 @@
                     <el-row>
                         <el-col style="width:max-content;">
 
-                            <el-form-item label="订单号">
-                                <el-input v-model="Order_number"></el-input>
+                            <el-form-item label="订单号" >
+                                <el-input v-model="Order_number"  type="number" placeholder="只能输入数字"></el-input>
                             </el-form-item>
                             <el-form-item label="运单号">
                                 <el-input v-model="Waybill_number"></el-input>
@@ -29,7 +29,8 @@
                                     <el-option key="2" label="已入库" value="2"></el-option>
                                     <el-option key="3" label="已出港" value="3"></el-option>
                                     <el-option key="4" label="已入港" value="4"></el-option>
-                                    <el-option key="5" label="已签收" value="5"></el-option>
+                                    <el-option key="5" label="签收完成!" value="签收完成!"></el-option>
+                                    <el-option key="6" label="配载完成" value="配载完成"></el-option>
                                 </el-select>
                             </el-form-item>
 
@@ -64,13 +65,13 @@
                 <el-table-column prop="Condition" label="运单状态" align="center" :formatter="formatter"></el-table-column>
                 <el-table-column prop="BillNUmber" label="运单号" align="center"></el-table-column>
                 <el-table-column prop="TakeTime" label="运单生成时间" align="center"></el-table-column>
-                <el-table-column prop="SendsAddress" label="发货地址" align="center"></el-table-column>
-                <el-table-column prop="GetsTime" label="收货时间" align="center" :formatter="formatter2"></el-table-column>
-                <el-table-column prop="GetAddress" label="收货地址" align="center"></el-table-column>
+                <el-table-column prop="SendsAddress" label="发货地址" align="center"   :show-overflow-tooltip="true"></el-table-column>
+                <el-table-column prop="GetsTime" label="收货时间" align="center" ></el-table-column>
+                <el-table-column prop="GetAddress" label="收货地址" align="center" :show-overflow-tooltip="true"></el-table-column>
                 <el-table-column label="操作" align="center">
                     <template slot-scope="scope">
                         <el-button size="small" type="primary" @click.native.prevent="details(scope.row)">详情</el-button>
-                        <el-button size="small" type="success">温度</el-button>
+                        <el-button size="small" type="success" @click.native.prevent="TemperatureList(scope.row)">温度</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -79,7 +80,7 @@
                     @current-change="handleCurrentChange"
                     layout="prev, pager, next"
                     :page-size="10"
-
+                    :total="ccc"
                 ></el-pagination>
             </div>
         </div>
@@ -150,9 +151,6 @@
 
            </span>
         </el-dialog>-->
-
-
-
     </div>
 </template>
 
@@ -168,11 +166,9 @@
                 form: {
                     Waybill_number: "",
                     Order_number:"",
-
                 },
-                u_id: "",
                 cur_page: 1,
-                ccc: 0,
+                ccc: 0,//总页数
                 token: "",
                 value4: [],//发货时间
                 multipleSelection: [],
@@ -225,22 +221,16 @@
                 this.getData();
             },
             getData() {
-                // // 开发环境使用 easy-mock 数据，正式环境使用 json 文件
-                // if (process.env.NODE_ENV === 'development') {
-                //     this.url = '/ms/table/list';
-                // };
                 if(this.value4 == null){
                     this.value4 = ["",""];
                 }
-
-                this.$axios
-                    .post(
+                this.$axios.post(
                         this.URL_API + "/berry/public/index.php/Init_way_bill/index",
                         {
-                            page: this.cur_page,
-                            BillNumber:this.Waybill_number,
+                            page: this.cur_page,   //当前页
+                            BillNumber:this.Waybill_number, //运单号
                             Condition: this.select_cate, // 0 未完成 1 已完成
-                            ID:this.Order_number,
+                            ID:this.Order_number,        //订单号
                             TakeTime: this.value4[0] || '', // 下单开始时间
                             GetsTime: this.value4[1] || '', // 下单结束时间
                         },
@@ -263,35 +253,54 @@
                     .then(res => {
                         if (res.data.code == 0) {
                             this.tableData = res.data.data;
-                         /*   this.ccc = res.data.data.count;*/
+                            this.ccc = res.data.sum;
                         } else {
                             this.tableData = [];
-                           /* this.ccc = 1;*/
-                           /* this.$message.error(res.data.message);*/
+                            this.ccc = 1;
+                            this.$message.error(res.data.message);
                         }
                     });
             },
+            //过滤运单状态
             formatter(row, column) {
-               if(row.Condition == null){
-                   return "暂无"
-               }
+                switch (row.Condition){
+                    case '配载完成':
+                        return '配载完成';
+                        break;
+                    case '签收完成!':
+                        return '签收完成!';
+                        break;
+                    case  null:
+                        return '暂无';
+                        break;
+                    case '已取货':
+                        return '已取货';
+                        break;
+                    case '已签收':
+                        return '已签收';
+                        break;
+                    case '已返箱':
+                        return '已返箱';
+                        break;
+                    case '已拒单':
+                        return '已拒单';
+                        break;
+                    case '已完成':
+                        return '已完成';
+                        break;
+                }
+
 
             },
-            formatter2(row,colum){
-                if(row.GetsTime == null){
-                    return "暂无"
-                }
-            },
+
+
             temperatureInformation() {
                 let len = this.multipleSelection;
-
                 if (len.length == 1) {
                     this.id = len[0].id;
                     // 获取温度信息数据
-                    this.title = "温度信息";
-                    this.editVisible = true;
                 } else if (len.length == 0) {
-                    this.$message.error("请选择温度信息");
+                    this.$message.error("请选择导出信息");
                 } else {
                     this.$message.error("请选择单个数据");
                 }
@@ -336,6 +345,43 @@
 
                 });
             },*/
+
+
+          //温度详情页
+            TemperatureList(rows){
+                let BillNumber = rows.BillNUmber;
+
+                this.$axios.post(
+                    this.URL_API + "/berry/public/index.php/Init_way_bill/temperature",
+                    {
+                        BillNumber:BillNumber,
+                    },
+                    {
+                        transformRequest: [
+                            function(data) {
+                                let ret = "";
+                                for (let it in data) {
+                                    ret +=
+                                        encodeURIComponent(it) +
+                                        "=" +
+                                        encodeURIComponent(data[it]) +
+                                        "&";
+                                }
+                                return ret;
+                            }
+                        ]
+                    }
+                ).then(res => {
+                    if(res.data.code == '0'){
+
+                    this.$router.push({path:"/TemperatureList"});
+                    window.localStorage.setItem('data',JSON.stringify(res.data));
+                    window.localStorage.setItem('BillNumber',BillNumber);
+                }else if(res.data.code == '450'){
+                    this.$message("暂无权限");
+                }
+                });
+            }
 
         }
     };

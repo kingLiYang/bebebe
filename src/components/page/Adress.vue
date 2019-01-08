@@ -41,6 +41,7 @@
         style="width: 100%"
         ref="multipleTable"
         @selection-change="handleSelectionChange"
+        v-loading="loading"
       >
         <el-table-column type="selection" width="60" align="center"></el-table-column>
         <el-table-column type="index" width="50" label="序号" align="center"></el-table-column>
@@ -117,6 +118,7 @@ import areaOptions from "static/area.js";
 export default {
   data() {
     return {
+      loading: true,
       areaOptions: areaOptions,
       val: [], // 选中的省市区
       username: "",
@@ -195,8 +197,15 @@ export default {
             ]
           })
         .then(res => {
+
+          if(res.data.code == 0){
           this.tableData = res.data.data.data;
           this.ccc = res.data.data.count;
+          this.loading = false;
+          }else if(res.data.code == 450){
+            this.$message.success("登录时间过长，请重新登录");
+            this.$router.push("/login");
+          }
         });
     },
     timesta(row, column) {
@@ -205,13 +214,14 @@ export default {
     handleAdd() {
       this.title = "添加地址";
 
-      this.form.accout = "";
-      this.form.pwd = "";
-      this.form.zhiwu = "";
-      this.form.options = "";
-      this.form.relly_name = "";
+
+
+      this.form.username = "";
       this.form.phone = "";
-      this.form.email = "";
+      this.val = [];
+      this.form.company = "";
+      this.form.type = "";
+      this.form.address = "";
       this.editVisible = true;
     },
     // 添加地址  提交   修改地址  提交
@@ -269,6 +279,9 @@ export default {
               this.$message.success("添加成功");
             }
             this.getData();
+          }else if(res.data.code == 450){
+            this.$message.success("登录时间过长，请重新登录");
+            this.$router.push("/login");
           } else {
             this.$message.error(res.data.message);
           }
@@ -315,7 +328,10 @@ export default {
               ];
               this.title = "修改地址";
               this.editVisible = true;
-            }
+            }else if(res.data.code == 450){
+            this.$message.success("登录时间过长，请重新登录");
+            this.$router.push("/login");
+          }
           });
       } else if (len.length == 0) {
         this.$message.error("请选择要修改的地址");
@@ -366,6 +382,9 @@ export default {
             this.$message.success("删除成功");
             this.delVisible = false;
             this.getData();
+          }else if(res.data.code == 450){
+            this.$message.success("登录时间过长，请重新登录");
+            this.$router.push("/login");
           }
         });
     }

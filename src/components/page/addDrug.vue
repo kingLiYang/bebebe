@@ -43,31 +43,40 @@
                   <el-option label="15℃~25℃" value="15℃~25℃"></el-option>
                 </el-select>
               </el-form-item>
-              <el-form-item label="放置方式">
-                <el-input v-model="item.placement_mode"></el-input>
-              </el-form-item>
-              <el-form-item label="品名">
-                <el-col style="width:180%;">
-                  <el-input v-model="item.trade_name"></el-input>
+              <el-row style="display:flex;">
+                <el-col :span="10">
+                  <el-form-item label="放置方式">
+                    <el-input v-model="item.placement_mode"></el-input>
+                  </el-form-item>
                 </el-col>
-              </el-form-item>
-
-              <el-form-item label="尺寸">
-                <el-input
-                  v-model="item.size"
-                  @blur="chicun(item.size,index)"
-                  ref="content"
-                  placeholder="分隔符必须为*"
-                ></el-input>
-              </el-form-item>
-              <el-form-item label="规格">
-                <el-col style="width:180%;">
-                  <el-input v-model="item.standard"></el-input>
+                <el-col :span="18">
+                  <el-form-item label="品名" style="width:100%;">
+                    <el-input v-model="item.trade_name" style="width:180%;"></el-input>
+                  </el-form-item>
                 </el-col>
-              </el-form-item>
+              </el-row>
+              <el-row style="display:flex;">
+                <el-col :span="9">
+                  <el-form-item label="尺寸">
+                    <el-input
+                      v-model="item.size"
+                      @blur="chicun(item.size,index)"
+                      ref="content"
+                      placeholder="分隔符必须为*"
+                    ></el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="16">
+                  <el-form-item label="规格">
+                    <el-col style="width:180%;">
+                      <el-input v-model="item.standard"></el-input>
+                    </el-col>
+                  </el-form-item>
+                </el-col>
+              </el-row>
             </el-form>
             <p
-              style="font-size:12px;line-height:30px;color:#999;margin-top:-15px;padding-left:60px;"
+              style="font-size:12px;line-height:30px;color:#999;padding-left:60px;"
             >Tips : 格式为5*8*8，分隔符必须为*，单位默认为mm</p>
           </li>
         </ul>
@@ -126,7 +135,7 @@ export default {
     addReturn() {
       this.$router.push("/drug");
     },
-    chicun(aaa,index) {
+    chicun(aaa, index) {
       // 尺寸 正则
       let reg = /^((\d+\.\d+)|\d+)\*((\d+\.\d+)|\d+)\*((\d+\.\d+)|\d+)$/;
       if (aaa != "") {
@@ -136,7 +145,9 @@ export default {
         } else {
           this.isSubmit = false;
           this.$message.error("尺寸格式有误，请重新输入");
-          this.$refs.content[index].$el.getElementsByTagName("input")[0].focus();
+          this.$refs.content[index].$el
+            .getElementsByTagName("input")[0]
+            .focus();
         }
       }
     },
@@ -149,43 +160,47 @@ export default {
           item.art_no = this.art_no;
         });
       }
-      if(this.isSubmit){
-      this.$axios
-        .post(
-          this.URL_API + "/berry/public/index.php/drug/add",
-          {
-            drug_data: JSON.stringify(data),
-            token: this.token
-          },
-          {
-            transformRequest: [
-              function(data) {
-                let ret = "";
-                for (let it in data) {
-                  ret +=
-                    encodeURIComponent(it) +
-                    "=" +
-                    encodeURIComponent(data[it]) +
-                    "&";
+      if (this.isSubmit) {
+        this.$axios
+          .post(
+            this.URL_API + "/berry/public/index.php/drug/add",
+            {
+              drug_data: JSON.stringify(data),
+              token: this.token
+            },
+            {
+              transformRequest: [
+                function(data) {
+                  let ret = "";
+                  for (let it in data) {
+                    ret +=
+                      encodeURIComponent(it) +
+                      "=" +
+                      encodeURIComponent(data[it]) +
+                      "&";
+                  }
+                  return ret;
                 }
-                return ret;
-              }
-            ]
-          }
-        )
-        .then(res => {
-          if (res.data.code == 0) {
-            this.$message.success("添加成功");
-            this.$router.push("/drug");
+              ]
+            }
+          )
+          .then(res => {
+            if (res.data.code == 0) {
+              this.$message.success("添加成功");
+              this.$router.push("/drug");
+            }else if(res.data.code == 450){
+            this.$message.success("登录时间过长，请重新登录");
+            this.$router.push("/login");
           } else {
-            this.$message.error(res.data.message);
-          }
-        })
-        .catch(err => {
-          console.log(err);
-        });
+              this.$message.error(res.data.message);
+            }
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      } else {
+        this.$message.error("请填写完整信息");
       }
-
     }
   }
 };
@@ -197,6 +212,9 @@ body {
   -ms-user-select: none;
   user-select: none;
 }
+/* .el-form-item__content{
+  width:70%;
+} */
 </style>
 
 <style scoped>

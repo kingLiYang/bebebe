@@ -143,7 +143,13 @@ export default {
         ]},{headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).then(res=>{
 
       // console.log(res.data);
-      this.items = res.data.data;
+      
+      if(res.data.code == 0){
+        this.items = res.data.data;
+      }else if(res.data.code == 450){
+            this.$message.success("登录时间过长，请重新登录");
+            this.$router.push("/login");
+          }
 
     }).catch(err=>{
       this.$message.error('服务器错误，请稍后再试');
