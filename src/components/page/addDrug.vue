@@ -44,20 +44,20 @@
                 </el-select>
               </el-form-item>
               <el-row style="display:flex;">
-                <el-col :span="10">
-                  <el-form-item label="放置方式">
+                <!-- <el-col> -->
+                  <el-form-item label="放置方式" style="display:flex;">
                     <el-input v-model="item.placement_mode"></el-input>
                   </el-form-item>
-                </el-col>
-                <el-col :span="18">
-                  <el-form-item label="品名" style="width:100%;">
-                    <el-input v-model="item.trade_name" style="width:180%;"></el-input>
+                <!-- </el-col> -->
+                <!-- <el-col> -->
+                  <el-form-item label="品名" style="display:flex;">
+                    <el-input v-model="item.trade_name" ></el-input>
                   </el-form-item>
-                </el-col>
+                <!-- </el-col> -->
               </el-row>
               <el-row style="display:flex;">
-                <el-col :span="9">
-                  <el-form-item label="尺寸">
+                <!-- <el-col :span="9"> -->
+                  <el-form-item label="尺寸" style="display:flex;">
                     <el-input
                       v-model="item.size"
                       @blur="chicun(item.size,index)"
@@ -65,14 +65,14 @@
                       placeholder="分隔符必须为*"
                     ></el-input>
                   </el-form-item>
-                </el-col>
-                <el-col :span="16">
-                  <el-form-item label="规格">
-                    <el-col style="width:180%;">
+                <!-- </el-col> -->
+                <!-- <el-col :span="16"> -->
+                  <el-form-item label="规格" style="display:flex;">
+                    <el-col>
                       <el-input v-model="item.standard"></el-input>
                     </el-col>
                   </el-form-item>
-                </el-col>
+                <!-- </el-col> -->
               </el-row>
             </el-form>
             <p

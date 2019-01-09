@@ -107,7 +107,7 @@
         <el-pagination
           @current-change="handleCurrentChange"
           layout="prev, pager, next"
-          :page-size="2"
+          :page-size="10"
           :total="ccc"
         ></el-pagination>
       </div>

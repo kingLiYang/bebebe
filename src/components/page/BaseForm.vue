@@ -10,11 +10,11 @@
     <div class="container">
       <div class="handle-box">
         <el-form :inline="true">
-          <el-row :gutter="30">
+          <el-row type="flex">
             <el-col :span="4">
               <el-button type="primary" @click="handleAdd()">添加</el-button>
             </el-col>
-            <el-col :span="15" :offset="7" style="width:max-content;">
+            <el-col>
               <el-form-item label="账户名">
                 <el-input v-model="accout"></el-input>
               </el-form-item>
@@ -77,7 +77,7 @@
         <el-pagination
           @current-change="handleCurrentChange"
           layout="prev, pager, next"
-          :page-size="2"
+          :page-size="10"
           :total="ccc"
         ></el-pagination>
       </div>

@@ -10,13 +10,13 @@
     <div class="container">
       <div class="handle-box">
         <el-form :inline="true">
-          <el-row :gutter="30">
-            <el-col :span="4">
+          <el-row type="flex" justify="space-between">
+            <el-col :span="10">
               <el-button type="primary" @click="handleAdd()">添加</el-button>
               <el-button type="primary" @click="handleEdit()">修改</el-button>
               <el-button type="primary" @click="handleDelete()">删除</el-button>
             </el-col>
-            <el-col :span="15" :offset="10" style="width:max-content;">
+            <el-col >
               <el-form-item label="货号">
                 <el-input v-model="art_no"></el-input>
               </el-form-item>
@@ -60,7 +60,7 @@
         <el-pagination
           @current-change="handleCurrentChange"
           layout="prev, pager, next"
-          :page-size="2"
+          :page-size="10"
           :total="ccc"
         ></el-pagination>
       </div>

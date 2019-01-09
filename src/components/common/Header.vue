@@ -81,7 +81,7 @@ export default {
   },
   computed: {
     username() {
-      this.zhiwu = window.sessionStorage.getItem("role_name");
+      this.zhiwu = window.sessionStorage.getItem("role_name") =="null" ? '超级管理员' : window.sessionStorage.getItem("role_name");
       let username = sessionStorage.getItem("username");
       return username ? username : this.name;
     }
