@@ -8,28 +8,33 @@
             </el-breadcrumb>
         </div>
         <div class="container">
+
             <div class="handle-box">
-                <el-button type="primary" @click="temperatureInformation()">温度信息</el-button>
-                <el-button type="primary" @click="NodeInformation()">节点信息</el-button>
-                <el-button type="primary" @click="SignPictures()">资料&签收图</el-button>
-                <el-button type="primary" @click="WaybillTrajectory()">运单轨迹</el-button>
+                <el-button type="primary" @click="temperatureInformation()">导出</el-button>
+
                 <el-form :inline="true" style="margin: 20px 0 0 0;">
                     <el-row>
                         <el-col style="width:max-content;">
-                            <el-form-item label="运单编号">
-                                <el-input v-model="Waybill_number"></el-input>
+
+                            <el-form-item label="订单号" >
+                                <el-input v-model="Order_number"  type="number" placeholder="只能输入数字"></el-input>
                             </el-form-item>
-                            <el-form-item label="温度计编号">
-                                <el-input v-model="Thermometer_number"></el-input>
+                            <el-form-item label="运单号">
+                                <el-input v-model="Waybill_number"></el-input>
                             </el-form-item>
                             <el-form-item label="运单状态">
                                 <el-select v-model="select_cate" placeholder="请选择" class="handle-select mr10">
-                                    <el-option key="0" label="未完成" value="1"></el-option>
-                                    <el-option key="1" label="已完成" value="0"></el-option>
+                                    <el-option key="0" label="代取件" value="0"></el-option>
+                                    <el-option key="1" label="已取件" value="1"></el-option>
+                                    <el-option key="2" label="已入库" value="2"></el-option>
+                                    <el-option key="3" label="已出港" value="3"></el-option>
+                                    <el-option key="4" label="已入港" value="4"></el-option>
+                                    <el-option key="5" label="签收完成!" value="签收完成!"></el-option>
+                                    <el-option key="6" label="配载完成" value="配载完成"></el-option>
                                 </el-select>
                             </el-form-item>
 
-                            <el-form-item label="时间">
+                            <el-form-item label="发货时间">
                                 <!-- <el-input v-model="name"></el-input> -->
                                 <el-date-picker
                                     v-model="value4"
@@ -44,12 +49,8 @@
                             <el-button type="primary" icon="search" @click="getData">搜索</el-button>
 
                         </el-col>
-
-
                     </el-row>
                 </el-form>
-
-
             </div>
             <el-table
                 :data="tableData"
@@ -59,35 +60,31 @@
                 @selection-change="handleSelectionChange"
             >
                 <el-table-column type="selection" width="60" align="center"></el-table-column>
-                <el-table-column type="index" width="50" label="序号" align="center"></el-table-column>
-                <el-table-column prop="order_code" label="温度计编号" align="center"></el-table-column>
-
-                <el-table-column prop="place_order_admin" label="运单编号" align="center"></el-table-column>
-                <el-table-column prop="check_order_admin" label="起始城市" align="center"></el-table-column>
-
-                <el-table-column prop="send_goods_address" label="目的城市" align="center"></el-table-column>
-                <el-table-column prop="get_goods_address" label="取件地址" align="center"></el-table-column>
-                <el-table-column prop="get_goods_address" label="签收地址" align="center"></el-table-column>
-
-                <el-table-column prop="support_value" label="温度区间" align="center"></el-table-column>
-                <el-table-column prop="support_value" label="服务网络" align="center"></el-table-column>
-                <el-table-column prop="get_goods_address" label="发件公司" align="center"></el-table-column>
-                <el-table-column prop="type" label="完成情况" align="center" :formatter="formatter"></el-table-column>
-                <el-table-column prop="time_limit" label="时限" align="center"></el-table-column>
-                <el-table-column prop="send_goods_time" label="取件时间" align="center" :formatter="addtimesta"></el-table-column>
-                <el-table-column prop="addtime" label="签收时间" align="center" :formatter="addtimesta"></el-table-column>
-                <el-table-column prop="send_goods_time" label="是否投保" align="center" :formatter="formatter"></el-table-column>
+                <el-table-column type="index" width="70" label="序号" align="center"></el-table-column>
+                <el-table-column prop="ID" label="订单号" align="center"></el-table-column>
+                <el-table-column prop="Condition" label="运单状态" align="center" :formatter="formatter"></el-table-column>
+                <el-table-column prop="BillNUmber" label="运单号" align="center"></el-table-column>
+                <el-table-column prop="TakeTime" label="运单生成时间" align="center"></el-table-column>
+                <el-table-column prop="SendsAddress" label="发货地址" align="center"   :show-overflow-tooltip="true"></el-table-column>
+                <el-table-column prop="GetsTime" label="收货时间" align="center" ></el-table-column>
+                <el-table-column prop="GetAddress" label="收货地址" align="center" :show-overflow-tooltip="true"></el-table-column>
+                <el-table-column label="操作" align="center">
+                    <template slot-scope="scope">
+                        <el-button size="small" type="primary" @click.native.prevent="details(scope.row)">详情</el-button>
+                        <el-button size="small" type="warning" @click.native.prevent="TemperatureList(scope.row)">温度</el-button>
+                    </template>
+                </el-table-column>
             </el-table>
             <div class="pagination">
                 <el-pagination
                     @current-change="handleCurrentChange"
                     layout="prev, pager, next"
-                    :page-size="2"
+                    :page-size="10"
                     :total="ccc"
                 ></el-pagination>
             </div>
         </div>
-        <!-- 温度信息弹出框 -->
+       <!-- &lt;!&ndash; 温度信息弹出框 &ndash;&gt;
         <el-dialog :title="title" :visible.sync="editVisible" width="50%"  >
             <el-form ref="form" :model="form">
                     <el-input v-model="company" style="width: 60px;"></el-input>
@@ -101,7 +98,7 @@
         </el-dialog>
 
 
-        <!-- 资料签收弹出框 -->
+        &lt;!&ndash; 资料签收弹出框 &ndash;&gt;
         <el-dialog :title="title" :visible.sync="qianshouVisible" width="50%" >
             <table v-model="TMSorder">
                 <tr>
@@ -153,10 +150,7 @@
             <el-button @click="qianshouVisible = false">返 回</el-button>
 
            </span>
-        </el-dialog>
-
-
-
+        </el-dialog>-->
     </div>
 </template>
 
@@ -164,28 +158,20 @@
     export default {
         data() {
             return {
-
-                Waybill_number: "",
-                Thermometer_number:"",
-                select_cate: "",
+                Waybill_number: "",//运单号
+                Order_number:"",//订单号
+                select_cate: "",//运单状态
                 tableData: [],
-                editVisible:false,
-                title: "温度信息",
-                qianshouVisible:false,
-                company:'ee',
+                GetsTime:"",
                 form: {
                     Waybill_number: "",
-                    Thermometer_number:"",
-
+                    Order_number:"",
                 },
-                TMSorder:"x",
-                u_id: "",
                 cur_page: 1,
-                ccc: 0,
+                ccc: 0,//总页数
                 token: "",
-                value4: [],
+                value4: [],//发货时间
                 multipleSelection: [],
-
                 pickerOptions2: {
                     shortcuts: [
                         {
@@ -235,25 +221,18 @@
                 this.getData();
             },
             getData() {
-                // // 开发环境使用 easy-mock 数据，正式环境使用 json 文件
-                // if (process.env.NODE_ENV === 'development') {
-                //     this.url = '/ms/table/list';
-                // };
                 if(this.value4 == null){
                     this.value4 = ["",""];
                 }
-
-                this.$axios
-                    .post(
-                        this.URL_API + "/berry/public/index.php/init_order/index",
+                this.$axios.post(
+                        this.URL_API + "/berry/public/index.php/Init_way_bill/index",
                         {
-                            page: this.cur_page,
-                            Waybill_number:this.Waybill_number,
-                            status: this.select_cate, // 0 未完成 1 已完成
-                            Thermometer_number:this.Thermometer_number,
-                            start_addtime: this.value4[0] || '', // 下单开始时间
-                            end_addtime: this.value4[1] || '', // 下单结束时间
-                            token: this.token
+                            page: this.cur_page,   //当前页
+                            BillNumber:this.Waybill_number, //运单号
+                            Condition: this.select_cate, // 0 未完成 1 已完成
+                            ID:this.Order_number,        //订单号
+                            TakeTime: this.value4[0] || '', // 下单开始时间
+                            GetsTime: this.value4[1] || '', // 下单结束时间
                         },
                          {
                             transformRequest: [
@@ -273,9 +252,8 @@
                     )
                     .then(res => {
                         if (res.data.code == 0) {
-                            this.tableData = res.data.data.data;
-
-                            this.ccc = res.data.data.count;
+                            this.tableData = res.data.data;
+                            this.ccc = res.data.sum;
                         } else {
                             this.tableData = [];
                             this.ccc = 1;
@@ -283,86 +261,127 @@
                         }
                     });
             },
+            //过滤运单状态
             formatter(row, column) {
-                return row.status == 1 ? "启用" : "禁用";
+                switch (row.Condition){
+                    case '配载完成':
+                        return '配载完成';
+                        break;
+                    case '签收完成!':
+                        return '签收完成!';
+                        break;
+                    case  null:
+                        return '暂无';
+                        break;
+                    case '已取货':
+                        return '已取货';
+                        break;
+                    case '已签收':
+                        return '已签收';
+                        break;
+                    case '已返箱':
+                        return '已返箱';
+                        break;
+                    case '已拒单':
+                        return '已拒单';
+                        break;
+                    case '已完成':
+                        return '已完成';
+                        break;
+                }
+
+
             },
+
+
             temperatureInformation() {
                 let len = this.multipleSelection;
-
                 if (len.length == 1) {
                     this.id = len[0].id;
                     // 获取温度信息数据
-                    this.title = "温度信息";
-                    this.editVisible = true;
                 } else if (len.length == 0) {
-                    this.$message.error("请选择温度信息");
+                    this.$message.error("请选择导出信息");
                 } else {
                     this.$message.error("请选择单个数据");
                 }
             },
 
-            NodeInformation(){
 
-            },
 
-            SignPictures(){
 
-                this.title = "资料&签收图";
-                this.qianshouVisible = true;
-            },
-            WaybillTrajectory(){
 
-            },
-            addtimesta(row, colume) {
-                if (row.addtime == null) {
-                    return "暂无";
-                } else {
-                    let date = new Date(parseInt(row.addtime) * 1000);
-                    let Y = date.getFullYear() + "-";
-                    let M =
-                        date.getMonth() + 1 < 10
-                            ? "0" + (date.getMonth() + 1) + "-"
-                            : date.getMonth() + 1 + "-";
-                    let D =
-                        date.getDate() < 10
-                            ? "0" + date.getDate() + " "
-                            : date.getDate() + " ";
-                    let h =
-                        date.getHours() < 10
-                            ? "0" + date.getHours() + ":"
-                            : date.getHours() + ":";
-                    let m =
-                        date.getMinutes() < 10
-                            ? "0" + date.getMinutes() + ":"
-                            : date.getMinutes() + ":";
-                    let s =
-                        date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds();
-                    return Y + M + D + h + m + s;
+//详情
+          /*  details(rows){
+                let id = rows.order_id;
+                // 详情
+                let that = this;
+                this.$axios({
+                    url: "http://www.zjcoldcloud.com/bqs/backend/web/index.php/order/details",
+                    method: "post",
+                    data: { order_id: id,token: window.sessionStorage.getItem("token") },
+                    transformRequest: [
+                        function(data) {
+                            let ret = "";
+                            for (let it in data) {
+                                ret +=
+                                    encodeURIComponent(it) +
+                                    "=" +
+                                    encodeURIComponent(data[it]) +
+                                    "&";
+                            }
+                            return ret;
+                        }
+                    ],
+                    headers: { "Content-Type": "application/x-www-form-urlencoded" }
+                }).then(function(res) {
+                    if(res.data.code == '0'){
+
+                        that.$router.push({path:"/billDetails"});
+                        window.localStorage.setItem('data',JSON.stringify(res.data));
+                        // that.options = res.data.data;
+                    }else if(res.data.code == '450'){
+                        that.$message("暂无权限");
+                    }
+
+                });
+            },*/
+
+
+          //温度详情页
+            TemperatureList(rows){
+                let BillNumber = rows.BillNUmber;
+
+                this.$axios.post(
+                    this.URL_API + "/berry/public/index.php/Init_way_bill/temperature",
+                    {
+                        BillNumber:BillNumber,
+                    },
+                    {
+                        transformRequest: [
+                            function(data) {
+                                let ret = "";
+                                for (let it in data) {
+                                    ret +=
+                                        encodeURIComponent(it) +
+                                        "=" +
+                                        encodeURIComponent(data[it]) +
+                                        "&";
+                                }
+                                return ret;
+                            }
+                        ]
+                    }
+                ).then(res => {
+                    if(res.data.code == '0'){
+
+                    this.$router.push({path:"/TemperatureList"});
+                    window.localStorage.setItem('data',JSON.stringify(res.data));
+                    window.localStorage.setItem('BillNumber',BillNumber);
+                }else if(res.data.code == '450'){
+                    this.$message("暂无权限");
                 }
-            },
-            timesta(row, column) {
-                let date = new Date(parseInt(row.send_goods_time) * 1000);
-                let Y = date.getFullYear() + "-";
-                let M =
-                    date.getMonth() + 1 < 10
-                        ? "0" + (date.getMonth() + 1) + "-"
-                        : date.getMonth() + 1 + "-";
-                let D =
-                    date.getDate() < 10 ? "0" + date.getDate() + " " : date.getDate() + " ";
-                let h =
-                    date.getHours() < 10
-                        ? "0" + date.getHours() + ":"
-                        : date.getHours() + ":";
-                let m =
-                    date.getMinutes() < 10
-                        ? "0" + date.getMinutes() + ":"
-                        : date.getMinutes() + ":";
-                let s =
-                    date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds();
-                return Y + M + D + h + m + s;
-            },
-
-
+                });
+            }
 
         }
     };

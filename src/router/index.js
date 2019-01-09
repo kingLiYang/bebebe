@@ -119,7 +119,38 @@ export default new Router({
                         title: '运单管理'
                     }
                 },
-
+                //温度监控列表
+                {
+                    path: '/TemperatureList',
+                    component: resolve => require(['../components/page/TemperatureList.vue'], resolve),
+                    meta: {
+                        title: '温度监控'
+                    }
+                },
+                //温度监控详情
+                {
+                    path: '/TemperatureDetails',
+                    component: resolve => require(['../components/page/TemperatureDetails.vue'], resolve),
+                    meta: {
+                        title: '温度监控'
+                    }
+                },
+                //轨迹详情
+                {
+                    path:"/TrajectoryDetails",
+                    component:resolve => require(['../components/page/TrajectoryDetails.vue'],resolve),
+                    meta:{
+                        title: '轨迹详情'
+                    }
+                },
+                //曲线详情
+                {
+                    path:"/BightDetails",
+                    component:resolve => require(['../components/page/BightDetails.vue'],resolve),
+                    meta:{
+                        title: '曲线详情'
+                    }
+                },
                 /************************************************************************** */
                 {
                     // 图片上传组件
