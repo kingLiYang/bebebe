@@ -18,27 +18,27 @@
                         <tr >
                             <td colspan="6" style="background: #f0f0f0;color: rgb(255, 255, 255);">
                                 <span style="float: left;margin-left: 10px;font-family: cursive;font-weight: 700;color:deepskyblue">温度概况</span >
-                                <span style="float: right;margin-right: 20px;font-family: cursive;font-weight: 700;color:deepskyblue">设备编号：111111</span>
+                                <span style="float: right;margin-right: 20px;font-family: cursive;font-weight: 700;color:deepskyblue">设备编号：{{SheBeiHao}}</span>
                             </td>
 
                         </tr>
                         <tr>
 
                             <td class="table_td">采集间隔</td>
-                            <td>5</td>
+                            <td>{{interval}}min</td>
                             <td class="table_td">温度最大值</td>
-                            <td>1</td>
+                            <td>{{Tem_H}}℃</td>
                             <td class="table_td">报警上限</td>
-                            <td>2</td>
+                            <td>{{Police_H}}℃</td>
                         </tr>
                         <tr>
 
                             <td class="table_td">开始时间</td>
-                            <td>5</td>
+                            <td>{{StartTime}}</td>
                             <td class="table_td">温度最小值</td>
-                            <td>1</td>
+                            <td>{{Tem_L}}℃</td>
                             <td class="table_td">报警下限</td>
-                            <td>2</td>
+                            <td>{{Police_L}}℃</td>
                         </tr>
                     </table>
                 </el-row>
@@ -46,18 +46,19 @@
                     <el-form :inline="true" style="margin: 20px 0 0 0;">
                         <el-row>
                             <el-col style="width:max-content;">
-                                <el-form-item label="采集时间">
+                                <el-form-item label="发货时间">
                                     <!-- <el-input v-model="name"></el-input> -->
                                     <el-date-picker
-
+                                        v-model="value4"
                                         value-format="yyyy-MM-dd HH:mm:ss"
                                         type="datetimerange"
+                                        :picker-options="pickerOptions2"
                                         range-separator="至"
                                         start-placeholder="开始日期"
                                         end-placeholder="结束日期"
                                     ></el-date-picker>
                                 </el-form-item>
-                                <el-button type="primary" icon="search" >搜索</el-button>
+                                <el-button type="primary" icon="search" @click="getData()" >搜索</el-button>
 
                             </el-col>
                         </el-row>
@@ -66,28 +67,31 @@
                         <el-button type="primary" @click="temperatureInformation()">导出</el-button>
                         <el-button type="success" @click="excelDetails()">excel</el-button>
                         <el-button type="primary" @click="PdfDetails()">PDF</el-button>
-                        <el-button type="info" @click="curveDetails()">曲线</el-button>
+
                         <el-button type="primary" @click="trackDetails()">轨迹</el-button>
                     </div>
 
                     <el-table
                         border
                         style="width: 100%"
-
+                        :data="tableData"
                     >
                         <el-table-column type="selection" width="60" align="center"></el-table-column>
                         <el-table-column type="index" width="70" label="序号" align="center"></el-table-column>
-                        <el-table-column prop="ID" label="订单号" align="center"></el-table-column>
-                        <el-table-column prop="Condition" label="运单状态" align="center" ></el-table-column>
-                        <el-table-column prop="BillNUmber" label="运单号" align="center"></el-table-column>
-                        <el-table-column prop="TakeTime" label="运单生成时间" align="center"></el-table-column>
-                        <el-table-column prop="SendsAddress" label="发货地址" align="center"   :show-overflow-tooltip="true"></el-table-column>
-                        <el-table-column prop="GetsTime" label="收货时间" align="center" ></el-table-column>
-                        <el-table-column prop="GetAddress" label="收货地址" align="center" :show-overflow-tooltip="true"></el-table-column>
+                        <el-table-column prop="id" label="设备号" align="center"></el-table-column>
+                        <el-table-column prop="temperature01" label="温度" align="center" ></el-table-column>
+                        <el-table-column prop="strong" label="信号强弱" align="center"></el-table-column>
+                        <el-table-column prop="jingdu" label="地理位置" align="center"   :show-overflow-tooltip="true"></el-table-column>
+                        <el-table-column prop="time" label="采集时间" align="center" ></el-table-column>
+                        <el-table-column prop="power" label="电量" align="center"></el-table-column>
 
                     </el-table>
                     <div class="pagination">
                         <el-pagination
+                            @current-change="handleCurrentChange"
+                            layout="prev, pager, next"
+                            :page-size="10"
+                            :total="ccc"
 
                         ></el-pagination>
                     </div>
@@ -104,26 +108,115 @@
     export default {
         data() {
             return {
-
+                tableData:[],
                 token: "",
+                cur_page: 1,
+                ccc: 0,//总页数
+                value4: [],//发货时间
+                pickerOptions2: {
+                    shortcuts: [
+                        {
+                            text: "最近一周",
+                            onClick(picker) {
+                                const end = new Date();
+                                const start = new Date();
+                                start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+                                picker.$emit("pick", [start, end]);
+                            }
+                        },
+                        {
+                            text: "最近一个月",
+                            onClick(picker) {
+                                const end = new Date();
+                                const start = new Date();
+                                start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+                                picker.$emit("pick", [start, end]);
+                            }
+                        },
+                        {
+                            text: "最近三个月",
+                            onClick(picker) {
+                                const end = new Date();
+                                const start = new Date();
+                                start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+                                picker.$emit("pick", [start, end]);
+                            }
+                        }
+                    ]
+                }
 
             };
         },
         created() {
-
             this.token = window.sessionStorage.getItem("token");
-
+            this.getData();
+            let data = JSON.parse(window.localStorage.getItem('data'));
+            this.interval = data.interval||"暂无";
+            this.StartTime = data.StartTime||"暂无";
+            this.Tem_H = data.Tem_H||"暂无";
+            this.Tem_L = data.Tem_L||"暂无";
+            this.Police_L = data.Police_L||"暂无";
+            this.Police_H = data.Police_H||"暂无";
         },
         methods: {
+            // 分页导航
+            handleCurrentChange(val) {
+                this.cur_page = val;
+                this.getData();
+            },
+            getData() {
+                if(this.value4 == null){
+                    this.value4 = ["",""];
+                }
+                let SheBeiHao = JSON.parse(window.localStorage.getItem('SheBeiHao'));
+                let BillNumber = JSON.parse(window.localStorage.getItem('BillNumber'));
+                this.SheBeiHao = SheBeiHao;
+                this.BillNumber = BillNumber;
+                this.$axios.post(
+                    this.URL_API + "/berry/public/index.php/Init_way_bill/details",
+                    {
+                        page: this.cur_page,   //当前页
+                        BillNumber: this.BillNumber, //运单号
+                        SheBeiHao: this.SheBeiHao,  //设备编号
+                        StartTime: this.value4[0] || '', // 下单开始时间
+                        EndTime: this.value4[1] || '', // 下单结束时间
+
+                    },
+                    {
+                        transformRequest: [
+                            function (data) {
+                                let ret = "";
+                                for (let it in data) {
+                                    ret +=
+                                        encodeURIComponent(it) +
+                                        "=" +
+                                        encodeURIComponent(data[it]) +
+                                        "&";
+                                }
+                                return ret;
+                            }
+                        ]
+                    }
+                )
+                    .then(res => {
+                        if (res.data.code == 0) {
+                            this.tableData = res.data.data;
+                            this.ccc = res.data.sum;
+                        } else {
+                            this.tableData = [];
+                            this.ccc = 1;
+                            this.$message.error(res.data.message);
+                        }
+                    });
+
+            },
             excelDetails(){
 
             },
             PdfDetails(){
 
             },
-            curveDetails(){
 
-            },
             trackDetails(){
 
             }
