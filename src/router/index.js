@@ -135,6 +135,22 @@ export default new Router({
                         title: '温度监控'
                     }
                 },
+                //轨迹详情
+                {
+                    path:"/TrajectoryDetails",
+                    component:resolve => require(['../components/page/TrajectoryDetails.vue'],resolve),
+                    meta:{
+                        title: '轨迹详情'
+                    }
+                },
+                //曲线详情
+                {
+                    path:"/BightDetails",
+                    component:resolve => require(['../components/page/BightDetails.vue'],resolve),
+                    meta:{
+                        title: '曲线详情'
+                    }
+                },
                 /************************************************************************** */
                 {
                     // 图片上传组件

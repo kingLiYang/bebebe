@@ -71,7 +71,7 @@
                 <el-table-column label="操作" align="center">
                     <template slot-scope="scope">
                         <el-button size="small" type="primary" @click.native.prevent="details(scope.row)">详情</el-button>
-                        <el-button size="small" type="success" @click.native.prevent="TemperatureList(scope.row)">温度</el-button>
+                        <el-button size="small" type="warning" @click.native.prevent="TemperatureList(scope.row)">温度</el-button>
                     </template>
                 </el-table-column>
             </el-table>
