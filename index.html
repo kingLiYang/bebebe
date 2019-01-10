@@ -20,6 +20,94 @@
     //     var s = document.getElementsByTagName("script")[0];
     //     s.parentNode.insertBefore(hm, s);
     // })();
+            /* 判断浏览器 低版本提示升级为高版本 好的 */
+            function judgetBrowser () {
+          var _browser = {}
+          var _browserWarningMsg = ''
+          var userAgent = navigator.userAgent.toLowerCase()  // 取得浏览器的userAgent字符串
+          var isOpera = userAgent.indexOf('opera') > -1 // 判断是否Opera浏览器
+          var isIE = userAgent.indexOf('compatible') > -1 && userAgent.indexOf('msie') > -1 && !isOpera // 判断是否IE浏览器
+          var isEdge = userAgent.indexOf('windows nt 6.1; trident/7.0;') > -1 && !isIE // 判断是否IE的Edge浏览器
+          var isFF = userAgent.indexOf('firefox') > -1 // 判断是否Firefox浏览器
+          var isSafari = userAgent.indexOf('safari') > -1 && userAgent.indexOf('chrome') === -1 // 判断是否Safari浏览器
+          var isChrome = userAgent.indexOf('chrome') > -1 && userAgent.indexOf('safari') > -1 // 判断Chrome浏览器
+        
+          if (isOpera) {
+            // 首先检测Opera是否进行了伪装
+            if (navigator.appName === 'Opera') {
+              // 如果没有进行伪装，则直接后去版本号
+              _browser.version = parseFloat(navigator.appVersion)
+            } else {
+              var reOperaVersion = new RegExp('opera (\\d+.\\d+)')
+              // 使用正则表达式的test方法测试并将版本号保存在RegExp.$1中
+              reOperaVersion.test(userAgent)
+              _browser.version = parseFloat(RegExp['$1'])
+            }
+            _browser.name = 'opera'
+          } else if (isIE) {
+            var reIE = new RegExp('msie (\\d+\\.\\d+);')
+            reIE.test(userAgent)
+            _browser.version = parseFloat(RegExp['$1'])
+            _browser.name = 'IE'
+            if (_browser.version < 10) {
+              _browserWarningMsg = '<span style="color:red; font-size:20px;">检测到您当前浏览器为IE' + _browser.version + '。该版本过低，请升级。</span>' +
+        "<a href='https://support.microsoft.com/zh-cn/help/17621/internet-explorer-downloads'>微软官方IE11下载地址。</a></br>" +
+        '<span style="color:red; font-size:20px;">如果您安装的IE浏览器为IE10及以上，请按F12检查默认值是否被设置为IE9以下。该问题通常是在IE兼容性视图设置*.arp.cn引起。</span>'
+              warningBrowser(_browser, _browserWarningMsg)
+            } else { warningDocumentMode() }
+          } else if (isEdge) { // 17版本及以上
+            var regEdge = new RegExp('edge/(\\d+)')
+            regEdge.test(userAgent)
+            _browser.version = parseFloat(RegExp['$1'])
+            _browser.name = 'Edge'
+            if (_browser.version < 17) {
+              _browserWarningMsg = 'Edge版本过低,请升级到Edge17及以上版本'
+            }
+          } else if (isFF) { // 60及以上
+            var regff = new RegExp('firefox/(\\d+\\.\\d+)')
+            regff.test(userAgent)
+            _browser.version = parseFloat(RegExp['$1'])
+            _browser.name = 'Firefox'
+            if (_browser.version < 60) {
+              _browserWarningMsg = 'Firefox版本过低,请升级到Firefox60及以上版本'
+            }
+          } else if (isSafari) { // 11.1及以上
+            var regSaf = new RegExp('safari/(\\d+)')
+            regSaf.test(userAgent)
+            _browser.version = parseFloat(RegExp['$1'])
+            _browser.name = 'Safari'
+            if (_browser.version < 11) {
+              _browserWarningMsg = 'Safari版本过低,请升级到Safari11及以上版本'
+            }
+          } else if (isChrome) { // 49及以上
+            var reChorme = new RegExp('chrome/(\\d+)')
+            reChorme.test(userAgent)
+            _browser.version = parseFloat(RegExp['$1'])
+            _browser.name = 'Chrome'
+            if (_browser.version < 49) {
+              _browserWarningMsg = 'Chrome版本过低,请升级到Chrome49及以上版本'
+              warningBrowser(_browser, _browserWarningMsg)
+            }
+          }
+        }
+        function warningBrowser (browser, msg) {
+          document.write('当前浏览器：' + browser.name + browser.version)
+          document.write('<br />')
+          document.write(msg)
+          var appId = document.getElementById('app')
+          appId.parentNode.removeChild(appId)
+          document.execCommand('Stop')
+        }
+        function warningDocumentMode () {
+          if (document.documentMode < 9) {
+            document.write('当前浏览器文档模式：' + document.documentMode)
+            document.write('<br />')
+            document.write('<span style="color:red">浏览器设置的文档模式过低，请设置为Internet Explorer 9标准及以上版本</span>')
+            document.write('<br />')
+            document.write('<span style="color:red;font-size:20px;">建议：请按F12，修改当前文档模式为Internet Explorer 9标准及以上模式</span>')
+          }
+        }
+        judgetBrowser();
 
 </script>
 
