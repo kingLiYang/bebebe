@@ -254,6 +254,7 @@
                         if (res.data.code == 0) {
                             this.tableData = res.data.data;
                             this.ccc = res.data.sum;
+
                         } else {
                             this.tableData = [];
                             this.ccc = 1;
@@ -349,8 +350,11 @@
 
           //温度详情页
             TemperatureList(rows){
-                let BillNumber = rows.BillNUmber;
-
+                let BillNumber = rows.BillNUmber,
+                      TakeTime =    rows.TakeTime,
+                       GetsTime  =rows.GetsTime;
+                window.localStorage.setItem('TakeTime',TakeTime);
+                window.localStorage.setItem('GetsTime',GetsTime);
                 this.$axios.post(
                     this.URL_API + "/berry/public/index.php/Init_way_bill/temperature",
                     {

@@ -30,49 +30,100 @@
         },
         methods: {
             drawLine(){
-                // 基于准备好的dom，初始化echarts实例
-                let myChart = this.$echarts.init(document.getElementById('myChart'))
-                // 绘制图表
-                myChart.setOption({
-
-
-                    backgroundColor: "#fff",
-                    color: ["#37A2DA"],
-
-                    toolbox: {
-                        left: 'right',
-                        feature: {
-
-
-                            dataZoom: {
-                                yAxisIndex: 'none'
-                            },
-                            dataView: {readOnly: false},
-                            magicType: {type: ['line', 'bar']},
-                            restore: {},
-                            saveAsImage: {}
+                let that = this;
+                let GetsTime = window.localStorage.getItem('GetsTime');
+                let TakeTime = window.localStorage.getItem('TakeTime');
+                let SheBeiHao = JSON.parse(window.localStorage.getItem('SheBeiHao'));
+                that.TakeTime = TakeTime;
+                that.GetsTime = GetsTime;
+                that.SheBeiHao =SheBeiHao;
+                that.$axios({
+                    url: "http://www.ccsc58.cc/newTms/Waybill/get_temperatrue.html",
+                    method: "post",
+                    data: {
+                        cargom:      that.SheBeiHao,
+                        startTime: that.TakeTime,
+                        endTime:that.GetsTime,
+                    },
+                    transformRequest: [
+                        function(data) {
+                            let ret = "";
+                            for (let it in data) {
+                                ret +=
+                                    encodeURIComponent(it) +
+                                    "=" +
+                                    encodeURIComponent(data[it]) +
+                                    "&";
+                            }
+                            return ret;
                         }
-                    },
-                    tooltip: {
-                        trigger: 'axis'
-                    },
-                    xAxis: {
-                        type: 'category',
-                        boundaryGap: false,
-                        data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
-                    },
-                    yAxis: {
-                        x: 'center',
-                        type: 'value',
-                    },
-                    series: [{
-                        name: '销量',
-                        type: 'line',
-                        data: [20, 80, 51, 90, 80, 30, 20]
-                    }]
+                    ],
+                    headers: { "Content-Type": "application/x-www-form-urlencoded" }
+                }).then(function(res) {
+
+                    // var pointArr = [];
+                    var arrX = [];
+                    var arrY = [];
+                    var num = Math.ceil(res.data.data.length / 20);
+                    for (var k = 0; k < res.data.data.length; k ++) {
+                        if(k % num == 0 || k == 0 || k == res.data.data.length - 1){
+                            // pointArr.push({
+                            //     temperature01: res.data.data[k].temperature01,
+                            //     time: res.data.data[k].time
+                            // });
+                            arrX.push(res.data.data[k].time);
+                            arrY.push(res.data.data[k].temperature01);
+                        }
+                    }
+                    // console.log(pointArr);return
+                    // 基于准备好的dom，初始化echarts实例
+                    let myChart = that.$echarts.init(document.getElementById('myChart'))
+                    // 绘制图表
+                    myChart.setOption({
+
+                        backgroundColor: "#fff",
+                        color: ["#37A2DA"],
+
+                        toolbox: {
+                            left: 'right',
+                            feature: {
 
 
-            });
+                                dataZoom: {
+                                    yAxisIndex: 'none'
+                                },
+                                dataView: {readOnly: false},
+                                magicType: {type: ['line', 'bar']},
+                                restore: {},
+                                saveAsImage: {}
+                            }
+                        },
+                        tooltip: {
+                            trigger: 'axis'
+                        },
+                        xAxis: {
+                            type: 'category',
+                            boundaryGap: false,
+                            data: arrX
+                        },
+                        yAxis: {
+                            x: 'center',
+                            type: 'value',
+                            axisLabel: {
+                                formatter: '{value} °C'
+                            }
+                        },
+                        series: [{
+                            name: '温度',
+                            type: 'line',
+                            data: arrY
+                        }]
+
+
+                    });
+
+                });
+
             }
         }
     }
