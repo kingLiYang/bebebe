@@ -80,13 +80,13 @@ export default new Router({
                     }
                 },
                 // init_order 订单管理
-                {
-                    path: '/initOrder',
-                    component: resolve => require(['../components/page/Order.vue'], resolve),
-                    meta: {
-                        title: '订单管理'
-                    }
-                },
+                // {
+                //     path: '/initOrder',
+                //     component: resolve => require(['../components/page/Order.vue'], resolve),
+                //     meta: {
+                //         title: '订单管理'
+                //     }
+                // },
                 // init_order 订单添加
                 {
                     path: '/add_order',
@@ -111,6 +111,7 @@ export default new Router({
                         title: '订单详情'
                     }
                 },
+<<<<<<< HEAD
                 // 运单管理 11111
                 {
                     path: '/InitWayBill',
@@ -151,6 +152,10 @@ export default new Router({
                         title: '曲线详情'
                     }
                 },
+=======
+
+
+>>>>>>> 7622d9063916c6b7967ede9316a65426571dce96
                 /************************************************************************** */
                 {
                     // 图片上传组件
