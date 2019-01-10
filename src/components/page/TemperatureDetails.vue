@@ -102,6 +102,14 @@
 export default {
   data() {
     return {
+
+      interval:"",
+      StartTime:"",
+      Tem_H:"",
+      Tem_L :"",
+      Police_L:"",
+      Police_H:"",
+
         isShow: false,
         interval:"",
             StartTime:"",
@@ -109,6 +117,7 @@ export default {
            Tem_L :"",
            Police_L:"",
             Police_H:"",
+
       tableData: [],
       token: "",
       cur_page: 1,
