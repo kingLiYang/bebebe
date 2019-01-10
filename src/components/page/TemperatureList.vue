@@ -73,9 +73,10 @@
                 // ).then(res => {
 
                 //     if(res.data.code == '0'){
-                        this.$router.push({path:"/TemperatureDetails",query:{SheBeiHao:SheBeiHao,BillNumber:BillNumber}})
-                //         window.localStorage.setItem('SheBeiHao',SheBeiHao);
-                //         window.localStorage.setItem('BillNumber',BillNumber);
+                        
+                        window.localStorage.setItem('SheBeiHao',SheBeiHao);
+                        window.localStorage.setItem('BillNumber',BillNumber);
+                        this.$router.push({path:"/TemperatureDetails"})
                 //         window.localStorage.setItem('data',JSON.stringify(res.data))
                 //     }else if(res.data.code == 1){
                 //         this.$router.push({path:"/TemperatureDetails"})

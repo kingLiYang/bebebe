@@ -64,10 +64,10 @@
             </el-row>
           </el-form>
           <div style="margin-bottom: 20px;">
-            <el-button type="success" @click="excelDetails()">excel</el-button>
-            <el-button type="primary" @click="PdfDetails()">PDF</el-button>
-            <el-button type="primary" @click="curve()">曲线</el-button>
-            <el-button type="primary" @click="trackDetails()">轨迹</el-button>
+            <el-button type="success" @click="excelDetails()" :disabled="isShow">excel</el-button>
+            <el-button type="primary" @click="PdfDetails()" :disabled="isShow">PDF</el-button>
+            <el-button type="primary" @click="curve()" :disabled="isShow">曲线</el-button>
+            <el-button type="primary" @click="trackDetails()" :disabled="isShow">轨迹</el-button>
           </div>
 
           <el-table border style="width: 100%" :data="tableData">
@@ -102,12 +102,22 @@
 export default {
   data() {
     return {
+<<<<<<< HEAD
       interval:"",
       StartTime:"",
       Tem_H:"",
       Tem_L :"",
       Police_L:"",
       Police_H:"",
+=======
+        isShow: false,
+        interval:"",
+            StartTime:"",
+            Tem_H:"",
+           Tem_L :"",
+           Police_L:"",
+            Police_H:"",
+>>>>>>> 11c48922879d30b4734c0af7e8fe5c4c87a9033c
       tableData: [],
       token: "",
       cur_page: 1,
@@ -149,8 +159,6 @@ export default {
   },
   created() {
     this.token = window.sessionStorage.getItem("token");
-    this.BillNumber = this.$route.query.BillNumber;
-    this.SheBeiHao = this.$route.query.SheBeiHao;
 
     this.getData();
   },
@@ -164,8 +172,8 @@ export default {
       if (this.value4 == null) {
         this.value4 = ["", ""];
       }
-      this.SheBeiHao = this.SheBeiHao;
-      this.BillNumber = this.BillNumber;
+      this.SheBeiHao = JSON.parse(window.localStorage.getItem('SheBeiHao'));;
+      this.BillNumber = JSON.parse(window.localStorage.getItem('BillNumber'));;
 
       this.$axios
         .post(
@@ -195,6 +203,7 @@ export default {
         )
         .then(res => {
           if (res.data.code == 0) {
+              this.isShow = false;
             this.interval = res.data.interval || "0";
             this.StartTime = res.data.StartTime || "0";
             this.Tem_H = res.data.Tem_H || "0";
@@ -205,6 +214,7 @@ export default {
             this.tableData = res.data.data;
             this.ccc = res.data.sum;
           } else {
+            this.isShow = true;
             this.interval = "0";
             this.StartTime ="0";
             this.Tem_H = "0";
