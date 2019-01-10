@@ -12,6 +12,7 @@
   "dependencies": {
     "axios": "^0.15.3",
     "babel-polyfill": "^6.23.0",
+    "echarts": "^4.2.0-rc.2",
     "element-china-area-data": "^4.1.1",
     "element-ui": "2.3.3",
     "mavon-editor": "^2.5.4",

@@ -66,7 +66,7 @@
                 <el-table-column prop="BillNUmber" label="运单号" align="center"></el-table-column>
                 <el-table-column prop="TakeTime" label="运单生成时间" align="center"></el-table-column>
                 <el-table-column prop="SendsAddress" label="发货地址" align="center"   :show-overflow-tooltip="true"></el-table-column>
-                <el-table-column prop="GetsTime" label="收货时间" align="center" ></el-table-column>
+                <el-table-column prop="GetsTime" label="收货时间" align="center" :formatter="timesta" ></el-table-column>
                 <el-table-column prop="GetAddress" label="收货地址" align="center" :show-overflow-tooltip="true"></el-table-column>
                 <el-table-column label="操作" align="center">
                     <template slot-scope="scope">
@@ -254,6 +254,7 @@
                         if (res.data.code == 0) {
                             this.tableData = res.data.data;
                             this.ccc = res.data.sum;
+
                         } else {
                             this.tableData = [];
                             this.ccc = 1;
@@ -293,7 +294,13 @@
 
             },
 
+//
+            timesta(row, column) {
 
+                return  this.GetsTime = row.GetsTime||"暂无";
+
+
+            },
             temperatureInformation() {
                 let len = this.multipleSelection;
                 if (len.length == 1) {
@@ -349,8 +356,11 @@
 
           //温度详情页
             TemperatureList(rows){
-                let BillNumber = rows.BillNUmber;
-
+                let BillNumber = rows.BillNUmber,
+                      TakeTime =    rows.TakeTime,
+                       GetsTime  =rows.GetsTime;
+                window.localStorage.setItem('TakeTime',TakeTime);
+                window.localStorage.setItem('GetsTime',GetsTime);
                 this.$axios.post(
                     this.URL_API + "/berry/public/index.php/Init_way_bill/temperature",
                     {
