@@ -80,13 +80,13 @@ export default new Router({
                     }
                 },
                 // init_order 订单管理
-                // {
-                //     path: '/initOrder',
-                //     component: resolve => require(['../components/page/Order.vue'], resolve),
-                //     meta: {
-                //         title: '订单管理'
-                //     }
-                // },
+                {
+                    path: '/initOrder',
+                    component: resolve => require(['../components/page/Order.vue'], resolve),
+                    meta: {
+                        title: '订单管理'
+                    }
+                },
                 // init_order 订单添加
                 {
                     path: '/add_order',
