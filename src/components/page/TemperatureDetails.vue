@@ -102,14 +102,14 @@
 export default {
   data() {
     return {
-<<<<<<< HEAD
+
       interval:"",
       StartTime:"",
       Tem_H:"",
       Tem_L :"",
       Police_L:"",
       Police_H:"",
-=======
+
         isShow: false,
         interval:"",
             StartTime:"",
@@ -117,7 +117,7 @@ export default {
            Tem_L :"",
            Police_L:"",
             Police_H:"",
->>>>>>> 11c48922879d30b4734c0af7e8fe5c4c87a9033c
+
       tableData: [],
       token: "",
       cur_page: 1,
