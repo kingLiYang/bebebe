@@ -102,12 +102,12 @@
 export default {
   data() {
     return {
-        interval:"",
-            StartTime:"",
-            Tem_H:"",
-           Tem_L :"",
-           Police_L:"",
-            Police_H:"",
+      interval:"",
+      StartTime:"",
+      Tem_H:"",
+      Tem_L :"",
+      Police_L:"",
+      Police_H:"",
       tableData: [],
       token: "",
       cur_page: 1,
