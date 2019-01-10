@@ -132,7 +132,7 @@ export default new Router({
                     path: '/TemperatureDetails',
                     component: resolve => require(['../components/page/TemperatureDetails.vue'], resolve),
                     meta: {
-                        title: '温度监控'
+                        title: '温度监控详情'
                     }
                 },
                 //轨迹详情

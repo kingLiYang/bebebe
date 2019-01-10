@@ -36,7 +36,9 @@
         },
 
         created() {
-            let data = JSON.parse(window.localStorage.getItem('data'));
+
+            let data = JSON.parse(window.localStorage.getItem('data1'));
+            // console.log(data);return
             this.StartCity = data.data.StartCity;
             this.EndCity = data.data.EndCity;
             this.temperature1 = data.data.BillNumber;
@@ -46,45 +48,44 @@
             TemperatureDetails(item){
                 let SheBeiHao = item,
                     BillNumber =   this.temperature1
-                this.$axios.post(
-                    this.URL_API + "/berry/public/index.php/Init_way_bill/details",
-                    {
-                        SheBeiHao:SheBeiHao,
-                        BillNumber:BillNumber,
+                // this.$axios.post(
+                //     this.URL_API + "/berry/public/index.php/Init_way_bill/details",
+                //     {
+                //         SheBeiHao:SheBeiHao,
+                //         BillNumber:BillNumber,
 
-                    },
-                    {
-                        transformRequest: [
-                            function(data) {
-                                let ret = "";
-                                for (let it in data) {
-                                    ret +=
-                                        encodeURIComponent(it) +
-                                        "=" +
-                                        encodeURIComponent(data[it]) +
-                                        "&";
-                                }
-                                return ret;
-                            }
-                        ]
-                    }
-                ).then(res => {
+                //     },
+                //     {
+                //         transformRequest: [
+                //             function(data) {
+                //                 let ret = "";
+                //                 for (let it in data) {
+                //                     ret +=
+                //                         encodeURIComponent(it) +
+                //                         "=" +
+                //                         encodeURIComponent(data[it]) +
+                //                         "&";
+                //                 }
+                //                 return ret;
+                //             }
+                //         ]
+                //     }
+                // ).then(res => {
 
-                    if(res.data.code == '0'){
-                        this.$router.push({path:"/TemperatureDetails"})
-                        window.localStorage.setItem('SheBeiHao',SheBeiHao);
-                        window.localStorage.setItem('BillNumber',BillNumber);
-                        window.localStorage.setItem('data',JSON.stringify(res.data))
-                    }else if(res.data.code == '1'){
-                        this.$router.push({path:"/TemperatureDetails"})
-                        window.localStorage.setItem('SheBeiHao',SheBeiHao);
-                        window.localStorage.setItem('BillNumber',BillNumber);
-                        window.localStorage.setItem('data',JSON.stringify(res.data))
-                        this.$message.error(res.data.message);
-                    }else{
-                        this.$message.error(res.data.message);
-                    }
-                });
+                //     if(res.data.code == '0'){
+                        this.$router.push({path:"/TemperatureDetails",query:{SheBeiHao:SheBeiHao,BillNumber:BillNumber}})
+                //         window.localStorage.setItem('SheBeiHao',SheBeiHao);
+                //         window.localStorage.setItem('BillNumber',BillNumber);
+                //         window.localStorage.setItem('data',JSON.stringify(res.data))
+                //     }else if(res.data.code == 1){
+                //         this.$router.push({path:"/TemperatureDetails"})
+                //         window.localStorage.setItem('SheBeiHao',SheBeiHao);
+                //         window.localStorage.setItem('BillNumber',BillNumber);
+                //         window.localStorage.setItem('data',JSON.stringify(res.data))
+                //     }else{
+                //         this.$message.error(res.data.message);
+                //     }
+                // });
 
 
             }

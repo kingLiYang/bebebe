@@ -385,7 +385,7 @@
                     if(res.data.code == '0'){
 
                     this.$router.push({path:"/TemperatureList"});
-                    window.localStorage.setItem('data',JSON.stringify(res.data));
+                    window.localStorage.setItem('data1',JSON.stringify(res.data));
                     window.localStorage.setItem('BillNumber',BillNumber);
                 }else if(res.data.code == '450'){
                     this.$message("暂无权限");

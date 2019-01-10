@@ -34,9 +34,10 @@
                         mapTypes: [BMAP_NORMAL_MAP, BMAP_HYBRID_MAP]
                     })
                 );
-                map.setCurrentCity("北京"); // 设置地图显示的城市 此项是必须设置的
+                map.addControl(new BMap.ScaleControl());
+                // map.setCurrentCity("北京"); // 设置地图显示的城市 此项是必须设置的
                 map.enableScrollWheelZoom(true); //开启鼠标滚轮缩放
-               /* let that = this;
+                let that = this;
                 let GetsTime = window.localStorage.getItem('GetsTime');
                 let TakeTime = window.localStorage.getItem('TakeTime');
                 let SheBeiHao = JSON.parse(window.localStorage.getItem('SheBeiHao'));
@@ -73,19 +74,20 @@
                     for (var k = 0; k < res.data.data.length; k ++) {
                         if(k % num == 0 || k == 0 || k == res.data.data.length - 1){
                             pointArr.push({
-                                jingdu: res.data.data[k].jingdu,
-                                weidu: res.data.data[k].weidu
+                                lng: res.data.data[k].jingdu,
+                                lat: res.data.data[k].weidu
                             });
 
                         }
                     }
+              
                     var trackPoint = [];
                     for (var i = 0, j = pointArr.length; i < j; i++) {
                         trackPoint.push(new BMap.Point(pointArr[i].lng, pointArr[i].lat));
                     }
                     map.centerAndZoom(trackPoint[0], 15);
 
-                    // ����
+                    // 画线
                     var polyline = new BMap.Polyline(trackPoint, {
                         strokeColor: "#ad0e21",
                         strokeWeight: 3,
@@ -93,25 +95,25 @@
                         strokeOpacity: 1
                     });
                     map.addOverlay(polyline);
-                    // ����ͼƬ
+                    // 配置图片
                     var size = new BMap.Size(22, 22);
                     var offset = new BMap.Size(0, 0);
                     var imageSize = new BMap.Size(20, 20);
-                    var icon = new BMap.Icon("__PUBLIC__/Admin/images/maker.svg", size, {
+                    var icon = new BMap.Icon("static/img/marker.svg", size, {
                         imageSize: imageSize,
                         infoWindowAnchor:new BMap.Size(0, -3)
                     });
-                    var start = new BMap.Icon("__PUBLIC__/Admin/images/start.svg", size, {
+                    var start = new BMap.Icon("static/img/start.svg", size, {
                         imageSize: imageSize,
                         infoWindowAnchor:new BMap.Size(0, -3)
                     });
-                    var end = new BMap.Icon("__PUBLIC__/Admin/images/end.svg", size, {
+                    var end = new BMap.Icon("static/img/end.svg", size, {
                         imageSize: imageSize,
                         infoWindowAnchor:new BMap.Size(0, -3)
                     });
 
 
-                    // ��ͼ��
+                    // 画图标
                     for (var i = 0, j = trackPoint.length; i < j; i++) {
                         if(i == 0){
                             var marker = new BMap.Marker(trackPoint[i], {
@@ -189,8 +191,8 @@
                     }
 
                     setZoom(pointArr)
-                    this.map();
-                });*/
+                   
+                });
             }
 
 
