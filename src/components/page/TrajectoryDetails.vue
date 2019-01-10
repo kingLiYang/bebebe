@@ -34,8 +34,7 @@
                         mapTypes: [BMAP_NORMAL_MAP, BMAP_HYBRID_MAP]
                     })
                 );
-                map.addControl(new BMap.ScaleControl());
-                // map.setCurrentCity("北京"); // 设置地图显示的城市 此项是必须设置的
+                map.setCurrentCity("北京"); // 设置地图显示的城市 此项是必须设置的
                 map.enableScrollWheelZoom(true); //开启鼠标滚轮缩放
                 let that = this;
                 let GetsTime = window.localStorage.getItem('GetsTime');
@@ -80,14 +79,13 @@
 
                         }
                     }
-              
                     var trackPoint = [];
                     for (var i = 0, j = pointArr.length; i < j; i++) {
                         trackPoint.push(new BMap.Point(pointArr[i].lng, pointArr[i].lat));
                     }
                     map.centerAndZoom(trackPoint[0], 15);
 
-                    // 画线
+                    // ����
                     var polyline = new BMap.Polyline(trackPoint, {
                         strokeColor: "#ad0e21",
                         strokeWeight: 3,
@@ -95,7 +93,7 @@
                         strokeOpacity: 1
                     });
                     map.addOverlay(polyline);
-                    // 配置图片
+                    // ����ͼƬ
                     var size = new BMap.Size(22, 22);
                     var offset = new BMap.Size(0, 0);
                     var imageSize = new BMap.Size(20, 20);
@@ -113,7 +111,7 @@
                     });
 
 
-                    // 画图标
+                    // ��ͼ��
                     for (var i = 0, j = trackPoint.length; i < j; i++) {
                         if(i == 0){
                             var marker = new BMap.Marker(trackPoint[i], {
@@ -191,7 +189,7 @@
                     }
 
                     setZoom(pointArr)
-                   
+
                 });
             }
 

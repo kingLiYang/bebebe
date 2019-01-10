@@ -102,23 +102,20 @@
 export default {
   data() {
     return {
-
       interval:"",
       StartTime:"",
       Tem_H:"",
       Tem_L :"",
       Police_L:"",
       Police_H:"",
-
         isShow: false,
         interval:"",
-            StartTime:"",
-            Tem_H:"",
-           Tem_L :"",
-           Police_L:"",
-            Police_H:"",
-
-      tableData: [],
+        StartTime:"",
+        Tem_H:"",
+        Tem_L :"",
+        Police_L:"",
+        Police_H:"",
+        tableData: [],
       token: "",
       cur_page: 1,
       ccc: 0, //总页数
