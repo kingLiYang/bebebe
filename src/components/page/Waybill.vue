@@ -296,8 +296,14 @@
 
 //
             timesta(row, column) {
-
-                return  this.GetsTime = row.GetsTime||"暂无";
+                // return  this.GetsTime = row.GetsTime||"暂无";
+                // return this.GetsTime == null ? new date() : row.GetsTime;
+                if(row.GetsTime == null){
+                    let time = 123;
+                    return time
+                }else{
+                    return row.GetsTime;
+                }
 
 
             },
