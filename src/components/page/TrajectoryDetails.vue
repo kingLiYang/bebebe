@@ -37,12 +37,12 @@
                 map.setCurrentCity("北京"); // 设置地图显示的城市 此项是必须设置的
                 map.enableScrollWheelZoom(true); //开启鼠标滚轮缩放
                 let that = this;
-                let EndTime = window.localStorage.getItem('EndTime');
-                let StartTime = window.localStorage.getItem('StartTime');
+                let GetsTime = window.localStorage.getItem('GetsTime');
+                let TakeTime = window.localStorage.getItem('TakeTime');
                 let SheBeiHao = JSON.parse(window.localStorage.getItem('SheBeiHao'));
                 let  BillNumber = JSON.parse(window.localStorage.getItem('BillNumber'));
-                that.EndTime = EndTime;
-                that.StartTime = StartTime;
+                that.TakeTime = TakeTime;
+                that.GetsTime = GetsTime;
                 that.SheBeiHao =SheBeiHao;
                 that.BillNumber =BillNumber;
                 that.$axios({
