@@ -37,19 +37,23 @@
                 map.setCurrentCity("北京"); // 设置地图显示的城市 此项是必须设置的
                 map.enableScrollWheelZoom(true); //开启鼠标滚轮缩放
                 let that = this;
-                let GetsTime = window.localStorage.getItem('GetsTime');
-                let TakeTime = window.localStorage.getItem('TakeTime');
+                let EndTime = window.localStorage.getItem('EndTime');
+                let StartTime = window.localStorage.getItem('StartTime');
                 let SheBeiHao = JSON.parse(window.localStorage.getItem('SheBeiHao'));
-                that.TakeTime = TakeTime;
-                that.GetsTime = GetsTime;
+                let  BillNumber = JSON.parse(window.localStorage.getItem('BillNumber'));
+                that.EndTime = EndTime;
+                that.StartTime = StartTime;
                 that.SheBeiHao =SheBeiHao;
+                that.BillNumber =BillNumber;
                 that.$axios({
-                    url: "http://www.ccsc58.cc/newTms/Waybill/get_temperatrue.html",
+                    url: "http://www.zjcoldcloud.com/berry/public/index.php/Init_way_bill/details",
                     method: "post",
                     data: {
-                        cargom:      that.SheBeiHao,
-                        startTime: that.TakeTime,
-                        endTime:that.GetsTime,
+                        SheBeiHao :      that.SheBeiHao,
+                        BillNumber  :   that.BillNumber,
+                        state:"guiji",
+                        EndTime:that.EndTime||"",
+                        StartTime:that.StartTime||"",
                     },
                     transformRequest: [
                         function(data) {

@@ -362,11 +362,8 @@
 
           //温度详情页
             TemperatureList(rows){
-                let BillNumber = rows.BillNUmber,
-                      TakeTime =    rows.TakeTime,
-                       GetsTime  =rows.GetsTime;
-                window.localStorage.setItem('TakeTime',TakeTime);
-                window.localStorage.setItem('GetsTime',GetsTime);
+                let BillNumber = rows.BillNUmber;
+
                 this.$axios.post(
                     this.URL_API + "/berry/public/index.php/Init_way_bill/temperature",
                     {
