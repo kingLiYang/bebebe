@@ -27,7 +27,7 @@
                 <h4 style="padding: 0 0 10px 0;">订单信息</h4>
                 <el-collapse v-model="activeNames">
                     <el-collapse-item
-                        :title="'货号：'+K.art_no+'\xa0\xa0\xa0数量：'+K.art_num+'\xa0\xa0\xa0温度计使用：'+K.is_thermometer"
+                        :title="'\xa0\xa0\xa0货号：'+K.art_no+'\xa0\xa0\xa0数量：'+K.art_num+'\xa0\xa0\xa0温度计使用：'+K.is_thermometer"
                         :name="index"
                         v-for="(K,index) in item.drug"
                         :key="index"
