@@ -119,6 +119,22 @@ export default new Router({
                         title: '运单管理'
                     }
                 },
+                // init_order 运单详情
+                {
+                    path: '/WaybillDetails',
+                    component: resolve => require(['../components/page/WaybillDetails.vue'], resolve),
+                    meta: {
+                        title: '运单详情'
+                    }
+                },
+
+                {
+                    path: '/details_order',
+                    component: resolve => require(['../components/page/orderDetails.vue'], resolve),
+                    meta: {
+                        title: '订单详情'
+                    }
+                },
                 //温度监控列表
                 {
                     path: '/TemperatureList',
