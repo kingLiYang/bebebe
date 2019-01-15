@@ -299,8 +299,8 @@
                 // return  this.GetsTime = row.GetsTime||"暂无";
                 // return this.GetsTime == null ? new date() : row.GetsTime;
                 if(row.GetsTime == null){
-                    let time = 123;
-                    return time
+                    // let time = new date();
+                    return "暂无"
                 }else{
                     return row.GetsTime;
                 }
