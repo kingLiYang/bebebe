@@ -9,6 +9,7 @@
                 </el-breadcrumb>
             </el-col>
         </div>
+      <!--  <div v-if="showPrise">暂无数据</div>-->
         <div v-for='(item,index) in datailsWabill ' :key="index" style="margin-bottom: 50px" >
 
             <div class="crumbs">
@@ -126,7 +127,8 @@
                 limit:"",
                 sendTime:"",
                 status:"",
-                getDatamsg:""
+                getDatamsg:"",
+                //showPrise: false,
             };
         },
         created() {
@@ -163,33 +165,43 @@
                     )
                     .then(res => {
 
-                         this.datailsWabill = res.data.data;
-                        this.datailsWabill.forEach((item,index)=>{
-                            item.send_goods_time = this.dateFormat(item.send_goods_time,'yyyy-mm-dd hh:ii:ss');
-                            switch (item.status) {
-                                case 0 :
-                                    item.status = "待审核";
-                                    break;
-                                case 1 :
-                                    item.status = "通过";
-                                    break;
-                                case 2 :
-                                    item.status = "驳回";
-                                    break;
-                                case 3 :
-                                    item.status = "完成";
-                                    break;
-                            }
-
-                            item.drug.forEach((item,index)=>{
-                                if (item.is_thermometer == 0) {
-                                    item.is_thermometer = "否";
-                                } else {
-                                    item.is_thermometer = "是";
+                        if( res.data.code == 0){
+                            //this.showPrise = false
+                            this.datailsWabill = res.data.data;
+                            this.datailsWabill.forEach((item,index)=>{
+                                item.send_goods_time = this.dateFormat(item.send_goods_time,'yyyy-mm-dd hh:ii:ss');
+                                switch (item.status) {
+                                    case 0 :
+                                        item.status = "待审核";
+                                        break;
+                                    case 1 :
+                                        item.status = "通过";
+                                        break;
+                                    case 2 :
+                                        item.status = "驳回";
+                                        break;
+                                    case 3 :
+                                        item.status = "完成";
+                                        break;
                                 }
 
+                                item.drug.forEach((item,index)=>{
+                                    if (item.is_thermometer == 0) {
+                                        item.is_thermometer = "否";
+                                    } else {
+                                        item.is_thermometer = "是";
+                                    }
+
+                                })
                             })
-                        })
+
+                        }else if(res.data.code==1){
+
+                            this.$message.error(res.data.message);
+                            this.$router.push({ path: "/InitWayBill" });
+                        }
+
+
 
 
                     });
