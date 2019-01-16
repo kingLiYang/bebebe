@@ -305,7 +305,6 @@
                     return row.GetsTime;
                 }
 
-
             },
             temperatureInformation() {
                 let len = this.multipleSelection;
