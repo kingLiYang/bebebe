@@ -31,19 +31,25 @@
         methods: {
             drawLine(){
                 let that = this;
-                let GetsTime = window.localStorage.getItem('GetsTime');
-                let TakeTime = window.localStorage.getItem('TakeTime');
+                let EndTime = window.localStorage.getItem('EndTime');
+                let StartTime = window.localStorage.getItem('StartTime');
                 let SheBeiHao = JSON.parse(window.localStorage.getItem('SheBeiHao'));
-                that.TakeTime = TakeTime;
-                that.GetsTime = GetsTime;
+                let  BillNumber = JSON.parse(window.localStorage.getItem('BillNumber'));
+                that.EndTime = EndTime;
+                that.StartTime = StartTime;
+               // console.log(that.EndTime,  that.StartTime)
                 that.SheBeiHao =SheBeiHao;
+                that.BillNumber =BillNumber;
                 that.$axios({
-                    url: "http://www.ccsc58.cc/newTms/Waybill/get_temperatrue.html",
+                    url: "http://www.zjcoldcloud.com/berry/public/index.php/Init_way_bill/details",
                     method: "post",
                     data: {
-                        cargom:      that.SheBeiHao,
-                        startTime: that.TakeTime,
-                        endTime:that.GetsTime,
+                        SheBeiHao :      that.SheBeiHao,
+                        BillNumber  :   that.BillNumber,
+                        state:"quxian",
+                        EndTime:that.EndTime||"",
+                        StartTime:that.StartTime||"",
+
                     },
                     transformRequest: [
                         function(data) {
@@ -60,7 +66,7 @@
                     ],
                     headers: { "Content-Type": "application/x-www-form-urlencoded" }
                 }).then(function(res) {
-
+console.log(res,1) ;
                     // var pointArr = [];
                     var arrX = [];
                     var arrY = [];

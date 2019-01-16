@@ -40,16 +40,20 @@
                 let GetsTime = window.localStorage.getItem('GetsTime');
                 let TakeTime = window.localStorage.getItem('TakeTime');
                 let SheBeiHao = JSON.parse(window.localStorage.getItem('SheBeiHao'));
+                let  BillNumber = JSON.parse(window.localStorage.getItem('BillNumber'));
                 that.TakeTime = TakeTime;
                 that.GetsTime = GetsTime;
                 that.SheBeiHao =SheBeiHao;
+                that.BillNumber =BillNumber;
                 that.$axios({
-                    url: "http://www.ccsc58.cc/newTms/Waybill/get_temperatrue.html",
+                    url: "http://www.zjcoldcloud.com/berry/public/index.php/Init_way_bill/details",
                     method: "post",
                     data: {
-                        cargom:      that.SheBeiHao,
-                        startTime: that.TakeTime,
-                        endTime:that.GetsTime,
+                        SheBeiHao :      that.SheBeiHao,
+                        BillNumber  :   that.BillNumber,
+                        state:"guiji",
+                        EndTime:that.EndTime||"",
+                        StartTime:that.StartTime||"",
                     },
                     transformRequest: [
                         function(data) {

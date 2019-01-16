@@ -299,8 +299,8 @@
                 // return  this.GetsTime = row.GetsTime||"暂无";
                 // return this.GetsTime == null ? new date() : row.GetsTime;
                 if(row.GetsTime == null){
-                    let time = 123;
-                    return time
+                    // let time = new date();
+                    return "暂无"
                 }else{
                     return row.GetsTime;
                 }
@@ -324,14 +324,58 @@
 
 
 //详情
-          /*  details(rows){
-                let id = rows.order_id;
+            details(rows){
+                let detailsID = rows.ID;
+                // var detailId = id.toString() ;
+
+                window.localStorage.setItem('detailsID',detailsID);
+                this.$router.push({path:"/WaybillDetails"});
+       /*         this.$axios.post(
+                    this.URL_API + "/berry/public/index.php/init_way_bill/way_default",
+                    {
+                        o_id: detailsID
+                    },
+                    {
+                        transformRequest: [
+                            function(data) {
+                                let ret = "";
+                                for (let it in data) {
+                                    ret +=
+                                        encodeURIComponent(it) +
+                                        "=" +
+                                        encodeURIComponent(data[it]) +
+                                        "&";
+                                }
+                                return ret;
+                            }
+                        ],
+                     headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" }
+                    }
+                ).then(res => {
+
+                    if(res.data.code == '1'){
+                        console.log(res.data,99)
+
+                        this.$router.push({path:"/WaybillDetails"});
+
+                       window.localStorage.setItem('data2',JSON.stringify(res.data));
+                        window.localStorage.setItem('detailsID',detailsID);
+                    }else if(res.data.code == '450'){
+                        this.$message("暂无权限");
+                    }
+                });*/
+            },
+         /*   details(rows){
+                let id = rows.ID;
+                var detailId = id.toString() ;
+               // console.log(typeof (detailId),9);
+
                 // 详情
-                let that = this;
+
                 this.$axios({
-                    url: "http://www.zjcoldcloud.com/bqs/backend/web/index.php/order/details",
+                    url: "http://localhost:8080/api//berry/public/index.php/init_way_bill/way_default",
                     method: "post",
-                    data: { order_id: id,token: window.sessionStorage.getItem("token") },
+                    data: { o_id: detailId,token: window.sessionStorage.getItem("token") },
                     transformRequest: [
                         function(data) {
                             let ret = "";
@@ -347,6 +391,8 @@
                     ],
                     headers: { "Content-Type": "application/x-www-form-urlencoded" }
                 }).then(function(res) {
+                    console.log(res,888);
+                    return
                     if(res.data.code == '0'){
 
                         that.$router.push({path:"/billDetails"});
@@ -362,11 +408,8 @@
 
           //温度详情页
             TemperatureList(rows){
-                let BillNumber = rows.BillNUmber,
-                      TakeTime =    rows.TakeTime,
-                       GetsTime  =rows.GetsTime;
-                window.localStorage.setItem('TakeTime',TakeTime);
-                window.localStorage.setItem('GetsTime',GetsTime);
+                let BillNumber = rows.BillNUmber;
+
                 this.$axios.post(
                     this.URL_API + "/berry/public/index.php/Init_way_bill/temperature",
                     {

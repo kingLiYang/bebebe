@@ -171,7 +171,11 @@ export default {
       }
       this.SheBeiHao = JSON.parse(window.localStorage.getItem('SheBeiHao'));;
       this.BillNumber = JSON.parse(window.localStorage.getItem('BillNumber'));;
-
+            var StartTime = this.value4[0]||"";
+            var EndTime = this.value4[1]||"";
+        window.localStorage.setItem('StartTime',StartTime);
+        window.localStorage.setItem('EndTime',EndTime);
+        console.log(StartTime,EndTime)
       this.$axios
         .post(
           this.URL_API + "/berry/public/index.php/Init_way_bill/details",
