@@ -16,7 +16,8 @@
                 <el-row >
                     <el-col style="display:flex;"  >
                         <div style="margin: 0 20px 0 0;"><span style="color:blue;">tms订单号：</span>{{item.tms_order_code}}</div>
-                        <div><span style="color:blue;">保价金额：</span>{{item.support_value}}</div>
+                        <div style="margin: 0 20px 0 0;"><span style="color:blue;">订单号：</span>{{item.order_code}}</div>
+                        <div><snppan style="color:blue;">保价金额：</snppan>{{item.support_value}}</div>
                         <div style="margin: 0 20px;"><span style="color:blue;">发货时间：</span>{{item.send_goods_time}}</div>
                         <div style="margin: 0 20px 0 0;"><span style="color:blue;">时限：</span>{{item.time_limit}}</div>
                         <div><span style="color:blue;">审核状态：</span>{{item.status}}</div>
