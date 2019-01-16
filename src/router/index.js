@@ -21,16 +21,6 @@ export default new Router({
                         title: '系统首页'
                     }
                 },
-                // {
-                //     path: '/table',
-                //     component: resolve => require(['../components/page/BaseTable.vue'], resolve),
-                //     meta: { title: '基础表格' }
-                // },
-                // {
-                //     path: '/tabs',
-                //     component: resolve => require(['../components/page/Tabs.vue'], resolve),
-                //     meta: { title: 'tab选项卡' }
-                // },
                 {
                     // 用户管理
                     path: '/user',
@@ -169,36 +159,11 @@ export default new Router({
                 },
 
                 {
-                    // 图片上传组件
-                    path: '/upload',
-                    component: resolve => require(['../components/page/Upload.vue'], resolve),
-                    meta: {
-                        title: '文件上传'
-                    }
-                },
-                {
-                    // vue-schart组件
-                    path: '/charts',
-                    component: resolve => require(['../components/page/BaseCharts.vue'], resolve),
-                    meta: {
-                        title: 'schart图表'
-                    }
-                },
-                {
-                    // 拖拽列表组件
-                    path: '/drag',
-                    component: resolve => require(['../components/page/DragList.vue'], resolve),
-                    meta: {
-                        title: '拖拽列表'
-                    }
-                },
-                {
-                    // 权限页面
-                    path: '/permission',
-                    component: resolve => require(['../components/page/Permission.vue'], resolve),
-                    meta: {
-                        title: '权限测试',
-                        permission: true
+                    // 费用管理
+                    path:"/feiyong",
+                    component: resolve => require(['../components/page/cost.vue'],resolve),
+                    meta:{
+                        title: '费用管理'
                     }
                 }
             ]
@@ -207,17 +172,5 @@ export default new Router({
             path: '/login',
             component: resolve => require(['../components/page/Login.vue'], resolve)
         }
-        // {
-        //     path: '/404',
-        //     component: resolve => require(['../components/page/404.vue'], resolve)
-        // },
-        // {
-        //     path: '/403',
-        //     component: resolve => require(['../components/page/403.vue'], resolve)
-        // },
-        // {
-        //     path: '*',
-        //     redirect: '/404'
-        // }
     ]
 })

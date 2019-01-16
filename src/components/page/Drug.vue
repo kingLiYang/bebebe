@@ -49,12 +49,12 @@
 
         <el-table-column prop="model" label="型号" align="center"></el-table-column>
         <el-table-column prop="trade_name" label="品名" align="center" :show-overflow-tooltip="true"></el-table-column>
-        <el-table-column prop="standard" label="规格" align="center"></el-table-column>
+        <el-table-column prop="standard" label="规格" align="center" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column prop="danwei" label="单位" align="center"></el-table-column>
         <el-table-column prop="temperature" label="储运温度" align="center"></el-table-column>
-        <el-table-column prop="support" label="报价金额" align="center"></el-table-column>
+        <el-table-column prop="support" label="保价金额" align="center"></el-table-column>
         <el-table-column prop="size" label="尺寸（长*宽*高）" align="center"></el-table-column>
-        <el-table-column prop="placement_mode" label="放置方式" align="center"></el-table-column>
+        <el-table-column prop="placement_mode" label="放置方式" align="center" :show-overflow-tooltip="true"></el-table-column>
       </el-table>
       <div class="pagination">
         <el-pagination
@@ -365,7 +365,12 @@ export default {
   }
 };
 </script>
+<style>
+.el-table{
+  color:#000;
+}
 
+</style>
 <style scoped>
 .handle-box {
   margin-bottom: 20px;
