@@ -79,10 +79,12 @@
         ref="multipleTable"
         @selection-change="handleSelectionChange"
         v-loading="loading"
+        :row-class-name="tableRowClassName"
       >
         <el-table-column type="selection" width="60" align="center"></el-table-column>
         <el-table-column type="index" width="50" label="序号" align="center"></el-table-column>
         <el-table-column prop="order_code" label="订单号" align="center"></el-table-column>
+        <el-table-column prop="status" label="审核状态" align="center" :formatter="changeSta" ></el-table-column>
         <el-table-column prop="addtime" label="下单时间" align="center" :formatter="addtimesta"></el-table-column>
         <el-table-column prop="place_order_admin" label="下单人员" align="center"></el-table-column>
         <el-table-column prop="check_order_admin" label="审核人" align="center"></el-table-column>
@@ -101,7 +103,7 @@
           :show-overflow-tooltip="true"
         ></el-table-column>
         <el-table-column prop="support_value" label="保价金额" align="center"></el-table-column>
-        <el-table-column prop="status" label="审核状态" align="center" :formatter="changeSta"></el-table-column>
+        
       </el-table>
       <div class="pagination">
         <el-pagination
@@ -122,8 +124,8 @@
       </span>
     </el-dialog>
     <!-- 商务经理 审核提示框 -->
-    <el-dialog title="审核提示" :visible.sync="checkVisible" width="30%">
-      <el-form :inline="true" label-width="100px">
+    <el-dialog title="审核提示" :visible.sync="checkVisible" width="40%">
+      <el-form :inline="true" label-width="100px" style="text-align:center;">
         <el-form-item label="备注">
           <el-input v-model="remark_why" style="width: 300px;"></el-input>
         </el-form-item>
@@ -135,7 +137,7 @@
       </span>
     </el-dialog>
     <!-- 运营      审核提示框 -->
-    <el-dialog title="审核提示" :visible.sync="playCheckVisible" width="30%">
+    <el-dialog title="审核提示" :visible.sync="playCheckVisible" width="40%">
       <el-form label-width="100px" :model="formCheck">
         <el-form-item label="备注">
           <el-input v-model="order_why" style="width: 300px;"></el-input>
@@ -143,22 +145,29 @@
         <el-form-item label="订单号">
           <el-input v-model="formCheck.order_check" style="width: 300px;" disabled></el-input>
         </el-form-item>
-        <!-- <el-form-item label="箱型">
-          <el-input v-model="formCheck.order_box" style="width: 300px;"></el-input>
+        <el-form-item label="时限">
+            <el-select placeholder="请选择" class="handle-select mr10" v-model="formCheck.time_limit">
+                <el-option label="请选择" value></el-option>
+                <el-option label="12H" value="12H"></el-option>
+                <el-option label="24H" value="24H"></el-option>
+                <el-option label="36H" value="36H"></el-option>
+                <el-option label="48H" value="48H"></el-option>
+                <el-option label="72H" value="72H"></el-option>
+              </el-select>
         </el-form-item>
-                  <el-form-item label="数量">
-          <el-input v-model="formCheck.order_num" style="width: 300px;"></el-input>
+                  <el-form-item label="运输方式">
+             <el-select placeholder="请选择" class="handle-select mr10" v-model="formCheck.mode_type">
+                <el-option label="请选择" value></el-option>
+                <el-option label="陆路" value="陆路"></el-option>
+                <el-option label="空运" value="空运"></el-option>
+              </el-select>
         </el-form-item>
            
-                  <el-form-item label="温度区间">
-          <el-input v-model="formCheck.order_tem" style="width: 300px;"></el-input>
-        </el-form-item>-->
       </el-form>
       <el-row v-for="(item,index) in box_num" :key="index">
         <div style="border:1px solid #bbb;padding: 10px 0 10px 44px;margin: 0 0 10px 0;">
           <p>温度区间：{{item.temperature}}</p>
           <div v-for="(ite,index) in item.box_num" :key="index">
-            <!-- 箱型：{{item.type}}L 数量：{{item.num}} -->
             <el-form :inline="true" style="display:flex;justify-content: space-between;">
               <el-form-item label="箱型">
                 <el-select placeholder="请选择" class="handle-select mr10" v-model="ite.type">
@@ -195,13 +204,14 @@ export default {
         order_tem: "",
         order_num: "",
         order_box: "",
-        order_check: ""
+        order_check: "",
+        time_limit:"",
+        mode_type:""
       },
       order_why: "",
       box_num: {},
       playCheckVisible: false,
       loading: true,
-      // url: './static/vuetable.json',
       isCheck: false, // 审核 按钮 是否显示
       remark_why: "", // 审核不通过原因
       checkVisible: false, // 审核弹框
@@ -284,7 +294,12 @@ export default {
       this.cur_page = val;
       this.getData();
     },
-
+    tableRowClassName({row,rowIndex}){
+      // console.log(row,rowIndex);
+      if(row.status == 2){
+        return "erring-row"
+      }
+    },
     getData() {
       // // 开发环境使用 easy-mock 数据，正式环境使用 json 文件
       // if (process.env.NODE_ENV === 'development') {
@@ -441,11 +456,19 @@ export default {
     },
     play_remark(status) {
       // 运营 审核 接口
-      // console.log(this.box_num);
+      // console.log(this.box_num); 
+      
       if (status == 2 && this.order_why == "") {
         this.$message.error("请输入订单驳回的原因");
-      } else {
+      } else if(this.formCheck.mode_type == '' && status == 3){
+        // console.log(this.mode_type);return;
+        this.$message.error("请选择运输方式");
+      }else if(this.formCheck.time_limit == '' && status == 3){
+        // console.log(this.time_limit);return;
+        this.$message.error("请选择时限");
+      }else{
         // 订单 审核
+        // console.log(this.time_limit);return;
         const Qs = require("qs");
         this.$axios
           .post(
@@ -456,6 +479,8 @@ export default {
               status: status,
               remark: this.order_why,
               box_num: this.box_num,
+              time_limit: this.formCheck.time_limit,
+              mode_type: this.formCheck.mode_type,
               token: this.token
             },
             {
@@ -472,6 +497,7 @@ export default {
           .then(res => {
             if (res.data.code == 0) {
               this.playCheckVisible = false;
+              this.$message.success("审核成功");
               this.getData();
             }else if(res.data.code == 450){
             this.$message.success("登录时间过长，请重新登录");
@@ -670,7 +696,17 @@ export default {
 };
 </script>
 
+<style>
+.el-table{
+  color:#000;
+}
+ .el-table .erring-row {
+  color:  red;
+}
+</style>
+ 
 <style scoped>
+
 .handle-box {
   margin-bottom: 20px;
 }

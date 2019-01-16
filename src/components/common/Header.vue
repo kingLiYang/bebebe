@@ -14,14 +14,14 @@
           </el-tooltip>
         </div>
         <!-- 消息中心 -->
-        <div class="btn-bell">
+        <!-- <div class="btn-bell">
           <el-tooltip effect="dark" :content="message?`有${message}条未读消息`:`消息中心`" placement="bottom">
             <router-link to="/tabs">
               <i class="el-icon-bell"></i>
             </router-link>
           </el-tooltip>
           <span class="btn-bell-badge" v-if="message"></span>
-        </div>
+        </div> -->
         <!-- 用户头像 -->
         <div class="user-avator">
           <img src="static/img/img.jpg">
@@ -140,6 +140,7 @@ export default {
         .then(res => {
           if (res.data.code == 0) {
             this.$message.success("修改成功");
+            window.localStorage.clear();
             this.$router.push("/login");
           }else if(res.data.code == 450){
             this.$message.success("登录时间过长，请重新登录");
@@ -175,6 +176,7 @@ export default {
         .then(res => {
           if (res.data.code == 0) {
             window.sessionStorage.clear();
+            window.localStorage.clear();
             this.$router.push("/login");
           }
         });

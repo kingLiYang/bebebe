@@ -153,6 +153,17 @@ export default new Router({
                 },
 
                 {
+                    // 费用管理
+                    path:"/feiyong",
+                    component: resolve => require(['../components/page/cost.vue'],resolve),
+                    meta:{
+                        title: '费用管理'
+                    }
+                },
+
+
+
+                {
                     // 图片上传组件
                     path: '/upload',
                     component: resolve => require(['../components/page/Upload.vue'], resolve),

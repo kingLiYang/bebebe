@@ -52,8 +52,8 @@
         <el-table-column prop="province" label="省份" align="center"></el-table-column>
         <el-table-column prop="city" label="城市" align="center"></el-table-column>
         <el-table-column prop="district" label="区" align="center"></el-table-column>
-        <el-table-column prop="company" label="公司" align="center"></el-table-column>
-        <el-table-column prop="address" label="详细地址" align="center" title="address"></el-table-column>
+        <el-table-column prop="company" label="公司" align="center" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column prop="address" label="详细地址" align="center" :show-overflow-tooltip="true"></el-table-column>
       </el-table>
       <div class="pagination">
         <el-pagination
@@ -240,6 +240,9 @@ export default {
       } else {
         type = this.form.type;
       }
+      if(this.val == ''){
+        this.val = ["","",""]
+      }
       let webData = {
         company: this.form.company,
         username: this.form.username,
@@ -391,7 +394,12 @@ export default {
   }
 };
 </script>
+<style>
+.el-table{
+  color:#000;
+}
 
+</style>
 <style scoped>
 .handle-box {
   margin-bottom: 20px;

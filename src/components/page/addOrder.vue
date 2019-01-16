@@ -28,11 +28,11 @@
               <!-- <el-input v-model="limit"></el-input> -->
               <el-select placeholder="请选择" class="handle-select mr10" v-model="limit">
                 <el-option label="请选择" value></el-option>
-                <el-option label="12" value="12"></el-option>
-                <el-option label="24" value="24"></el-option>
-                <el-option label="36" value="36"></el-option>
-                <el-option label="48" value="48"></el-option>
-                <el-option label="72" value="72"></el-option>
+                <el-option label="12H" value="12H"></el-option>
+                <el-option label="24H" value="24H"></el-option>
+                <el-option label="36H" value="36H"></el-option>
+                <el-option label="48H" value="48H"></el-option>
+                <el-option label="72H" value="72H"></el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="审核人">
@@ -130,12 +130,13 @@
             <el-form-item label="发货人">
               <el-input size="medium" @blur="get_send()" v-model="send.name"></el-input>
             </el-form-item>
+                        <el-form-item label="发货公司">
+              <el-input v-model="send.company" disabled></el-input>
+            </el-form-item>
             <el-form-item label="联系电话">
               <el-input v-model="send.phone" disabled></el-input>
             </el-form-item>
-            <el-form-item label="发货公司">
-              <el-input v-model="send.company" disabled></el-input>
-            </el-form-item>
+
             <el-form-item label="省">
               <el-input v-model="send.provice" disabled></el-input>
             </el-form-item>
@@ -156,14 +157,15 @@
             <el-form-item label="收货人">
               <el-input size="medium" v-model="receive.name" @blur="get_recive"></el-input>
             </el-form-item>
+              <el-form-item label="收货公司">
+              <el-input v-model="receive.company" disabled></el-input>
+            </el-form-item>
             <el-form-item label="联系电话">
               <el-col>
                 <el-input v-model="receive.phone" disabled></el-input>
               </el-col>
             </el-form-item>
-            <el-form-item label="收货公司">
-              <el-input v-model="receive.company" disabled></el-input>
-            </el-form-item>
+
             <el-form-item label="省">
               <el-input v-model="receive.provice" disabled></el-input>
             </el-form-item>

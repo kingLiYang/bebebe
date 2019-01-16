@@ -14,7 +14,7 @@
 
                 <el-form :inline="true" style="margin: 20px 0 0 0;">
                     <el-row>
-                        <el-col style="width:max-content;">
+                        <el-col >
 
                             <el-form-item label="订单号" >
                                 <el-input v-model="Order_number"  type="number" placeholder="只能输入数字"></el-input>
@@ -61,14 +61,14 @@
             >
                 <el-table-column type="selection" width="60" align="center"></el-table-column>
                 <el-table-column type="index" width="70" label="序号" align="center"></el-table-column>
-                <el-table-column prop="ID" label="订单号" align="center"></el-table-column>
+                <el-table-column prop="ID" label="TMS订单号" align="center"></el-table-column>
                 <el-table-column prop="Condition" label="运单状态" align="center" :formatter="formatter"></el-table-column>
                 <el-table-column prop="BillNUmber" label="运单号" align="center"></el-table-column>
                 <el-table-column prop="TakeTime" label="运单生成时间" align="center"></el-table-column>
                 <el-table-column prop="SendsAddress" label="发货地址" align="center"   :show-overflow-tooltip="true"></el-table-column>
                 <el-table-column prop="GetsTime" label="收货时间" align="center" :formatter="timesta" ></el-table-column>
                 <el-table-column prop="GetAddress" label="收货地址" align="center" :show-overflow-tooltip="true"></el-table-column>
-                <el-table-column label="操作" align="center">
+                <el-table-column label="操作" align="center" width="250">
                     <template slot-scope="scope">
                         <el-button size="small" type="primary" @click.native.prevent="details(scope.row)">详情</el-button>
                         <el-button size="small" type="warning" @click.native.prevent="TemperatureList(scope.row)">温度</el-button>
@@ -402,6 +402,12 @@
         }
     };
 </script>
+<style>
+.el-table{
+  color:#000;
+}
+
+</style>
 
 <style scoped>
     .handle-box {

@@ -45,7 +45,7 @@
         <el-table-column prop="relly_name" label="姓名" align="center"></el-table-column>
         <el-table-column prop="name" label="职务" align="center"></el-table-column>
         <el-table-column prop="phone" label="联系电话" align="center"></el-table-column>
-        <el-table-column prop="email" label="邮箱" align="center" width="150"></el-table-column>
+        <el-table-column prop="email" label="邮箱" align="center" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column
           prop="addtime"
           label="添加时间"
@@ -497,7 +497,12 @@ export default {
   }
 };
 </script>
+<style>
+.el-table{
+  color:#000;
+}
 
+</style>
 <style scoped>
 .handle-box {
   margin-bottom: 20px;

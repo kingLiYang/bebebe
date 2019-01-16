@@ -334,7 +334,12 @@ export default {
   }
 };
 </script>
+<style>
+.el-table{
+  color:#000;
+}
 
+</style>
 <style scoped>
 .handle-box {
   margin-bottom: 20px;
