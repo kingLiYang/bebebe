@@ -74,10 +74,18 @@
         </el-table-column>
       </el-table>
       <div class="pagination">
-        <el-pagination
+        <!-- <el-pagination
           @current-change="handleCurrentChange"
           layout="prev, pager, next"
           :page-size="10"
+          :total="ccc"
+        ></el-pagination> -->
+                <el-pagination
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :page-sizes="[50, 100, 500, 2000]"
+          :page-size="50"
+          layout="total, sizes, prev, pager, next, jumper"
           :total="ccc"
         ></el-pagination>
       </div>
@@ -167,6 +175,7 @@ export default {
         label: "name"
       },
       cur_page: 1,
+      limit: 50,
       data2: [],
       data3: [],
       ccc: 0,
@@ -183,6 +192,11 @@ export default {
       this.cur_page = val;
       this.getData();
     },
+        handleSizeChange(val){
+        // console.log(val); // 每页显示  条数
+        this.limit  = val;
+        this.getData();
+    },
     getData() {
       // // 开发环境使用 easy-mock 数据，正式环境使用 json 文件
       // if (process.env.NODE_ENV === 'development') {
@@ -193,6 +207,7 @@ export default {
           this.URL_API + "/berry/public/index.php/user/index",
           {
             page: this.cur_page,
+            limit: this.limit,
             account: this.accout,
             relly_name: this.name,
             status: this.select_cate,
@@ -498,12 +513,14 @@ export default {
 };
 </script>
 <style>
+  @import '../../../static/css/table.css';
 .el-table{
   color:#000;
 }
 
 </style>
 <style scoped>
+
 .handle-box {
   margin-bottom: 20px;
 }

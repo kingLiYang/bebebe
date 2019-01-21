@@ -77,6 +77,7 @@
         border
         style="width: 100%"
         ref="multipleTable"
+   
         @selection-change="handleSelectionChange"
         v-loading="loading"
         :row-class-name="tableRowClassName"
@@ -106,16 +107,18 @@
         
       </el-table>
       <div class="pagination">
-        <el-pagination
+          <el-pagination
+          @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
-          layout="prev, pager, next"
-          :page-size="10"
+          :page-sizes="[50, 100, 500, 2000]"
+          :page-size="50"
+          layout="total, sizes, prev, pager, next, jumper"
           :total="ccc"
         ></el-pagination>
       </div>
     </div>
 
-    <!-- 删除提示框 -->
+    <!-- 删除提示框   -->
     <el-dialog title="提示" :visible.sync="delVisible" width="300px" center>
       <div class="del-dialog-cnt">删除不可恢复，是否确定删除？</div>
       <span slot="footer" class="dialog-footer">
@@ -237,6 +240,7 @@ export default {
       del_id: [], // 删除id
       id: "", // 详情id
       ccc: 0,
+      limit: 50,
       token: "",
       value4: [],
       multipleSelection: [],
@@ -294,11 +298,19 @@ export default {
       this.cur_page = val;
       this.getData();
     },
+    handleSizeChange(val){
+        // console.log(val); // 每页显示  条数
+        this.limit  = val;
+        this.getData();
+    },
     tableRowClassName({row,rowIndex}){
       // console.log(row,rowIndex);
       if(row.status == 2){
         return "erring-row"
       }
+      // if(rowIndex%2 == 1){
+      //   return "bg_ccc"
+      // }
     },
     getData() {
       // // 开发环境使用 easy-mock 数据，正式环境使用 json 文件
@@ -318,6 +330,7 @@ export default {
           this.URL_API + "/berry/public/index.php/init_order/index",
           {
             page: this.cur_page,
+            limit: this.limit,
             order_code: this.accout, // 订单号
             status: this.select_cate, // 0 未审核 1 已审核
             send_goods_name: this.send_goods_name, // 发货人
@@ -697,15 +710,22 @@ export default {
 </script>
 
 <style>
+  @import '../../../static/css/table.css';
 .el-table{
   color:#000;
+  
 }
  .el-table .erring-row {
   color:  red;
 }
+ .el-table .bg_ccc{
+  background-color: #f5f7fa;
+}
+
 </style>
  
 <style scoped>
+
 
 .handle-box {
   margin-bottom: 20px;

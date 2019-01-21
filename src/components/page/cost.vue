@@ -66,10 +66,18 @@
         <el-table-column prop="SafePay" label="保价金额(元)" align="center"></el-table-column>
       </el-table>
       <div class="pagination">
-        <el-pagination
+        <!-- <el-pagination
           @current-change="handleCurrentChange"
           layout="prev, pager, next"
           :page-size="10"
+          :total="ccc"
+        ></el-pagination> -->
+                                        <el-pagination
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :page-sizes="[50, 100, 500, 2000]"
+          :page-size="50"
+          layout="total, sizes, prev, pager, next, jumper"
           :total="ccc"
         ></el-pagination>
       </div>
@@ -85,6 +93,7 @@ export default {
       tableData: [],
       loading: true,
       cur_page: 1,
+      limit: 50,
       tableAllData:[],
       value5: [],
       pickerOptions2: {
@@ -131,6 +140,11 @@ export default {
       this.cur_page = val;
       this.getData();
     },
+            handleSizeChange(val){
+        // console.log(val); // 每页显示  条数
+        this.limit  = val;
+        this.getData();
+    },
     getData() {
       if (this.value5 == null) {
         this.value5 = ["", ""];
@@ -141,6 +155,7 @@ export default {
           this.URL_API + "/berry/public/index.php/init_way_bill/way_price",
           {
             page: this.cur_page,
+            limit: this.limit,
             TakeTime: this.value5[0] || "",
             GetsTime: this.value5[1] || "",
             token: this.token
@@ -286,10 +301,12 @@ export default {
 };
 </script>
 <style>
+@import '../../../static/css/table.css';
 .el-table{
   color:#000;
 }
 
 </style>
 <style scoped>
+
 </style>

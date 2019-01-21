@@ -128,9 +128,16 @@
           <span style="font-weight:800;">发货信息</span>
           <el-form :model="send" label-width="100px" :inline="true" style="padding:10px 0 0 0;">
             <el-form-item label="发货人">
-              <el-input size="medium" @blur="get_send()" v-model="send.name"></el-input>
+              <!-- <el-input size="medium" @blur="get_send()" v-model="send.name"></el-input> -->
+              <el-autocomplete
+                class="inline-input"
+                v-model="send.name"
+                :fetch-suggestions="querySearch"
+                :trigger-on-focus="false"
+                @select="handleSelect"
+              ></el-autocomplete>
             </el-form-item>
-                        <el-form-item label="发货公司">
+            <el-form-item label="发货公司">
               <el-input v-model="send.company" disabled></el-input>
             </el-form-item>
             <el-form-item label="联系电话">
@@ -155,9 +162,16 @@
           <span style="font-weight:800;">收货信息</span>
           <el-form :model="receive" label-width="100px" :inline="true" style="padding:10px 0 0 0;">
             <el-form-item label="收货人">
-              <el-input size="medium" v-model="receive.name" @blur="get_recive"></el-input>
+              <!-- <el-input size="medium" v-model="receive.name" @blur="get_recive"></el-input> -->
+              <el-autocomplete
+                class="inline-input"
+                v-model="receive.name"
+                :fetch-suggestions="querySearchreceive"
+                :trigger-on-focus="false"
+                @select="handleSelectreceive"
+              ></el-autocomplete>
             </el-form-item>
-              <el-form-item label="收货公司">
+            <el-form-item label="收货公司">
               <el-input v-model="receive.company" disabled></el-input>
             </el-form-item>
             <el-form-item label="联系电话">
@@ -226,7 +240,8 @@ export default {
         address: ""
       },
       token: "",
-      type: ""
+      type: "",
+      restaurants: [] // 模糊查询
     };
   },
   created() {
@@ -260,7 +275,8 @@ export default {
         )
         .then(res => {
           if (res.data.code == 0) {
-            this.optionsStatus = res.data.data;
+            this.optionsStatus = res.data.data.data;
+            this.order_num = res.data.data.order;
           } else {
             this.$message.error("暂无审核人信息");
           }
@@ -325,18 +341,14 @@ export default {
           });
       }
     },
-    get_send() {
-      // 获取 发货信息 /berry/public/index.php/address/index
-      let name = this.send.name;
-      if (this.send.name == "") {
-      } else {
-        this.type = 1;
+    querySearch(queryString, cb) {
+      new Promise((resolve, reject) => {
         this.$axios
           .post(
-            this.URL_API + "/berry/public/index.php/address/index",
+            this.URL_API + "/berry/public/index.php/address/get_address",
             {
-              username: name,
-              type: this.type,
+              username: queryString,
+              type: 1,
               token: this.token
             },
             {
@@ -356,45 +368,42 @@ export default {
             }
           )
           .then(res => {
+            this.send_id = "";
+            this.send.phone = "";
+            this.send.company = "";
+            this.send.provice = "";
+            this.send.city = "";
+            this.send.area = "";
+            this.send.address = "";
             if (res.data.code == 0) {
-              let data = res.data.data.data[0];
-              if (data != undefined) {
-                this.send_id = data.id;
-                // this.send.name = res.data.data[0].username;
-                this.send.phone = data.phone;
-                this.send.name = data.username;
-                this.send.company = data.company;
-                this.send.provice = data.province;
-                this.send.city = data.city;
-                this.send.area = data.district;
-                this.send.address = data.address;
-              } else {
-                this.send.name = this.send.name;
-                this.send.phone = "";
-                this.send.company = "";
-                this.send.provice = "";
-                this.send.city = "";
-                this.send.area = "";
-                this.send.address = "";
-              }
-            } else {
-              this.$message.error(res.data.message);
+              res.data.data.forEach(item => {
+                item.value = item.username;
+              });
+
+              let obj = { data: res.data.data, queryString: queryString };
+              resolve(obj);
+            } else if (res.data.code == 450) {
+              this.$message.success("登录时间过长，请重新登录");
+              this.$router.push("/login");
             }
           });
-      }
+      }).then(res => {
+        var restaurants = res.data;
+        var results = queryString
+          ? restaurants.filter(this.createFilter(res.queryString))
+          : restaurants;
+        // 调用 callback 返回建议列表的数据
+        cb(results);
+      });
     },
-    get_recive() {
-      let name = this.receive.name;
-      if (name == "") {
-        this.receive = [];
-      } else {
-        this.type = 2;
+    querySearchreceive(queryString, cb){
+            new Promise((resolve, reject) => {
         this.$axios
           .post(
-            this.URL_API + "/berry/public/index.php/address/index",
+            this.URL_API + "/berry/public/index.php/address/get_address",
             {
-              username: name,
-              type: this.type,
+              username: queryString,
+              type: 2,
               token: this.token
             },
             {
@@ -414,34 +423,57 @@ export default {
             }
           )
           .then(res => {
+            this.get_id = "";
+            this.receive.phone = "";
+            this.receive.company = "";
+            this.receive.provice = "";
+            this.receive.city = "";
+            this.receive.area = "";
+            this.receive.address = "";
             if (res.data.code == 0) {
-              let data = res.data.data.data[0];
-              if (data != undefined) {
-                this.get_id = data.id;
-                this.receive.phone = data.phone;
-                //   this.receive.name = data.username;
-                this.receive.company = data.company;
-                this.receive.provice = data.province;
-                this.receive.city = data.city;
-                this.receive.area = data.district;
-                this.receive.address = data.address;
-              } else {
-                this.receive.phone = "";
-                this.receive.name = this.receive.name;
-                this.receive.company = "";
-                this.receive.provice = "";
-                this.receive.city = "";
-                this.receive.area = "";
-                this.receive.address = "";
-              }
-            }else if(res.data.code == 450){
-            this.$message.success("登录时间过长，请重新登录");
-            this.$router.push("/login");
-          } else {
-              this.$message.error(res.data.message);
+              res.data.data.forEach(item => {
+                item.value = item.username;
+              });
+
+              let obj = { data: res.data.data, queryString: queryString };
+              resolve(obj);
+            } else if (res.data.code == 450) {
+              this.$message.success("登录时间过长，请重新登录");
+              this.$router.push("/login");
             }
           });
-      }
+      }).then(res => {
+        var restaurants = res.data;
+        var results = queryString
+          ? restaurants.filter(this.createFilter(res.queryString))
+          : restaurants;
+        // 调用 callback 返回建议列表的数据
+        cb(results);
+      });
+    },
+    createFilter(queryString) {
+      return restaurant => {
+        return (true);
+      };
+    },
+    handleSelect(item) {
+      // 选中 渲染数据
+      this.send_id = item.id;
+      this.send.phone = item.phone;
+      this.send.company = item.company;
+      this.send.provice = item.province;
+      this.send.city = item.city;
+      this.send.area = item.district;
+      this.send.address = item.address;
+    },
+    handleSelectreceive(item) {
+      this.get_id = item.id;
+      this.receive.phone = item.phone;
+      this.receive.company = item.company;
+      this.receive.provice = item.province;
+      this.receive.city = item.city;
+      this.receive.area = item.district;
+      this.receive.address = item.address;
     },
     addReturn() {
       this.$router.push("/initOrder");
@@ -490,7 +522,7 @@ export default {
           if (res.data.code == 0) {
             this.$message.success("添加成功");
             this.$router.push("/initOrder");
-          }else if(res.data.code == 450){
+          } else if (res.data.code == 450) {
             this.$message.success("登录时间过长，请重新登录");
             this.$router.push("/login");
           } else {

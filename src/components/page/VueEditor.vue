@@ -335,12 +335,14 @@ export default {
 };
 </script>
 <style>
+  @import '../../../static/css/table.css';
 .el-table{
   color:#000;
 }
 
 </style>
 <style scoped>
+
 .handle-box {
   margin-bottom: 20px;
 }

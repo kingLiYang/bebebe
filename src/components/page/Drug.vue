@@ -57,10 +57,18 @@
         <el-table-column prop="placement_mode" label="放置方式" align="center" :show-overflow-tooltip="true"></el-table-column>
       </el-table>
       <div class="pagination">
-        <el-pagination
+        <!-- <el-pagination
           @current-change="handleCurrentChange"
           layout="prev, pager, next"
           :page-size="10"
+          :total="ccc"
+        ></el-pagination> -->
+                                <el-pagination
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :page-sizes="[50, 100, 500, 2000]"
+          :page-size="50"
+          layout="total, sizes, prev, pager, next, jumper"
           :total="ccc"
         ></el-pagination>
       </div>
@@ -153,6 +161,7 @@ export default {
       },
       id: "",
       cur_page: 1,
+      limit:50,
       del_id: [],
       multipleSelection: [],
       ccc: 0,
@@ -173,6 +182,11 @@ export default {
       this.cur_page = val;
       this.getData();
     },
+        handleSizeChange(val){
+        // console.log(val); // 每页显示  条数
+        this.limit  = val;
+        this.getData();
+    },
     handleAdd() {
       this.$router.push("/addDrug");
     },
@@ -184,6 +198,7 @@ export default {
       this.$axios
         .post(this.URL_API + "/berry/public/index.php/drug/index", {
           page: this.cur_page,
+          limit: this.limit,
           art_no: this.art_no,
           model: this.model,
           token: this.token
@@ -366,12 +381,14 @@ export default {
 };
 </script>
 <style>
+@import '../../../static/css/table.css';
 .el-table{
   color:#000;
 }
 
 </style>
 <style scoped>
+
 .handle-box {
   margin-bottom: 20px;
 }
