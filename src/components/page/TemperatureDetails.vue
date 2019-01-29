@@ -70,7 +70,7 @@
             <el-button type="primary" @click="trackDetails()" :disabled="isShow">轨迹</el-button>
           </div>
 
-          <el-table border style="width: 100%" :data="tableData">
+          <el-table border style="width: 100%" :data="tableData" v-loading="loading">
             <el-table-column type="index" width="70" label="序号" align="center"></el-table-column>
             <el-table-column prop="id" label="设备号" align="center"></el-table-column>
             <el-table-column prop="temperature01" label="温度" align="center" :formatter="timesta2"></el-table-column>
@@ -86,12 +86,21 @@
             <el-table-column prop="power" label="电量" align="center" :formatter="timesta3"></el-table-column>
           </el-table>
           <div class="pagination">
-            <el-pagination
+            <!-- <el-pagination
               @current-change="handleCurrentChange"
               layout="prev, pager, next"
               :page-size="10"
               :total="ccc"
-            ></el-pagination>
+            ></el-pagination> -->
+              <el-pagination
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+        
+          :page-sizes="[50, 100, 500, 2000]"
+          :page-size="50"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="ccc"
+        ></el-pagination>
           </div>
         </el-row>
       </div>
@@ -102,23 +111,19 @@
 export default {
   data() {
     return {
-      interval:"",
-      StartTime:"",
-      Tem_H:"",
-      Tem_L :"",
-      Police_L:"",
-      Police_H:"",
-        isShow: false,
-        interval:"",
-        StartTime:"",
-        Tem_H:"",
-        Tem_L :"",
-        Police_L:"",
-        Police_H:"",
-        tableData: [],
+      Tem_L: "",
+      loading: true,
+      Police_L: "",
+      Police_H: "",
+      isShow: false,
+      interval: "",
+      StartTime: "",
+      Tem_H: "",
+      tableData: [],
       token: "",
       cur_page: 1,
       ccc: 0, //总页数
+      limit: 50,
       value4: [], //发货时间
       aaa: "",
       pickerOptions2: {
@@ -162,25 +167,33 @@ export default {
   methods: {
     // 分页导航
     handleCurrentChange(val) {
+      this.loading = true;
       this.cur_page = val;
       this.getData();
+    },
+    handleSizeChange(val){
+      this.loading = true;
+        // console.log(val); // 每页显示  条数
+        this.limit  = val;
+        this.getData();
     },
     getData() {
       if (this.value4 == null) {
         this.value4 = ["", ""];
       }
-      this.SheBeiHao = JSON.parse(window.localStorage.getItem('SheBeiHao'));;
-      this.BillNumber = JSON.parse(window.localStorage.getItem('BillNumber'));;
-            var StartTime = this.value4[0]||"";
-            var EndTime = this.value4[1]||"";
-        window.localStorage.setItem('StartTime',StartTime);
-        window.localStorage.setItem('EndTime',EndTime);
-        console.log(StartTime,EndTime)
+      this.SheBeiHao = JSON.parse(window.localStorage.getItem("SheBeiHao"));
+      this.BillNumber = JSON.parse(window.localStorage.getItem("BillNumber"));
+      var StartTime = this.value4[0] || "";
+      var EndTime = this.value4[1] || "";
+      window.localStorage.setItem("StartTime", StartTime);
+      window.localStorage.setItem("EndTime", EndTime);
+      // console.log(StartTime,EndTime)
       this.$axios
         .post(
           this.URL_API + "/berry/public/index.php/Init_way_bill/details",
           {
             page: this.cur_page, //当前页
+            limit: this.limit,
             BillNumber: this.BillNumber, //运单号
             SheBeiHao: this.SheBeiHao, //设备编号
             StartTime: this.value4[0] || "", // 下单开始时间
@@ -204,7 +217,8 @@ export default {
         )
         .then(res => {
           if (res.data.code == 0) {
-              this.isShow = false;
+            this.loading = false;
+            this.isShow = false;
             this.interval = res.data.interval || "0";
             this.StartTime = res.data.StartTime || "0";
             this.Tem_H = res.data.Tem_H || "0";
@@ -215,9 +229,10 @@ export default {
             this.tableData = res.data.data;
             this.ccc = res.data.sum;
           } else {
+            this.loading = false;
             this.isShow = true;
             this.interval = "0";
-            this.StartTime ="0";
+            this.StartTime = "0";
             this.Tem_H = "0";
             this.Tem_L = "0";
             this.Police_L = "0";

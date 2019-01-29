@@ -44,14 +44,14 @@
 
         <el-table-column prop="relly_name" label="姓名" align="center"></el-table-column>
         <el-table-column prop="name" label="职务" align="center"></el-table-column>
-        <el-table-column prop="phone" label="联系电话" align="center"></el-table-column>
+        <el-table-column prop="phone" label="联系电话" align="center" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column prop="email" label="邮箱" align="center" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column
           prop="addtime"
           label="添加时间"
           align="center"
           :formatter="timesta"
-          width="150"
+          :show-overflow-tooltip="true"
         ></el-table-column>
         <el-table-column prop="region" label="地区" align="center"></el-table-column>
         <el-table-column prop="status" label="使用状态" align="center" :formatter="formatter"></el-table-column>
@@ -189,10 +189,12 @@ export default {
   methods: {
     // 分页导航
     handleCurrentChange(val) {
+      this.loading2 = true;
       this.cur_page = val;
       this.getData();
     },
         handleSizeChange(val){
+          this.loading2 = true;
         // console.log(val); // 每页显示  条数
         this.limit  = val;
         this.getData();
@@ -513,7 +515,6 @@ export default {
 };
 </script>
 <style>
-  @import '../../../static/css/table.css';
 .el-table{
   color:#000;
 }

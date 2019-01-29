@@ -51,10 +51,10 @@
         <!-- <el-table-column type="selection" width="60" align="center"></el-table-column> -->
         <el-table-column type="index" width="50" label="序号" align="center"></el-table-column>
         <el-table-column prop="id" label="订单号" align="center"></el-table-column>
-        <el-table-column prop="Depart" label="发货省份" align="center"></el-table-column>
+        <el-table-column prop="Depart" label="发货省份" align="center" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column prop="City" label="发货城市" align="center"></el-table-column>
         <el-table-column prop="Address" label="发货地址" align="center" :show-overflow-tooltip="true"></el-table-column>
-        <el-table-column prop="GetDepart" label="收货省份" align="center"></el-table-column>
+        <el-table-column prop="GetDepart" label="收货省份" align="center" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column prop="GetCity" label="收货城市" align="center"></el-table-column>
         <el-table-column
           prop="GetAddress"
@@ -137,10 +137,12 @@ export default {
   methods: {
     // 分页导航
     handleCurrentChange(val) {
+      this.loading=true;
       this.cur_page = val;
       this.getData();
     },
             handleSizeChange(val){
+              this.loading=true;
         // console.log(val); // 每页显示  条数
         this.limit  = val;
         this.getData();
@@ -301,7 +303,6 @@ export default {
 };
 </script>
 <style>
-@import '../../../static/css/table.css';
 .el-table{
   color:#000;
 }

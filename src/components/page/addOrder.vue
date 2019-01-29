@@ -25,8 +25,7 @@
               ></el-date-picker>
             </el-form-item>
             <el-form-item label="时限">
-              <!-- <el-input v-model="limit"></el-input> -->
-              <el-select placeholder="请选择" class="handle-select mr10" v-model="limit">
+              <el-select placeholder="请选择" class="handle-select mr10" v-model="limit" disabled>
                 <el-option label="请选择" value></el-option>
                 <el-option label="12H" value="12H"></el-option>
                 <el-option label="24H" value="24H"></el-option>
@@ -36,7 +35,6 @@
               </el-select>
             </el-form-item>
             <el-form-item label="审核人">
-              <!-- <el-input v-model="limit"></el-input> optionsStatus -->
               <el-select placeholder="请选择" class="handle-select mr10" v-model="statusMan">
                 <el-option label="请选择" value></el-option>
                 <el-option
@@ -68,7 +66,6 @@
               <el-input v-model="ite.art_num"></el-input>
             </el-form-item>
             <el-form-item label="是否使用温度计">
-              <!-- <el-input v-model="limit"></el-input> -->
               <el-select placeholder="请选择" class="handle-select mr10" v-model="ite.is_thermomete">
                 <el-option label="是" value="1"></el-option>
                 <el-option label="否" value="0"></el-option>
@@ -375,6 +372,7 @@ export default {
             this.send.city = "";
             this.send.area = "";
             this.send.address = "";
+            this.limit = "";
             if (res.data.code == 0) {
               res.data.data.forEach(item => {
                 item.value = item.username;
@@ -430,6 +428,7 @@ export default {
             this.receive.city = "";
             this.receive.area = "";
             this.receive.address = "";
+            this.limit = "";
             if (res.data.code == 0) {
               res.data.data.forEach(item => {
                 item.value = item.username;
@@ -465,6 +464,9 @@ export default {
       this.send.city = item.city;
       this.send.area = item.district;
       this.send.address = item.address;
+      if(this.receive.city != ''){
+        this.getLimit();
+      }
     },
     handleSelectreceive(item) {
       this.get_id = item.id;
@@ -474,6 +476,9 @@ export default {
       this.receive.city = item.city;
       this.receive.area = item.district;
       this.receive.address = item.address;
+      if(this.send.city != ''){
+        this.getLimit();
+      }
     },
     addReturn() {
       this.$router.push("/initOrder");
@@ -529,6 +534,42 @@ export default {
             this.$message.error(res.data.message);
           }
         });
+    },
+
+    getLimit(){
+      
+          this.$axios
+          .post(
+            this.URL_API + "/berry/public/index.php/init_order/order_default_time",
+            {
+              start_city: this.send.city.substr(0,this.send.city.length-1),
+              end_city: this.receive.city.substr(0,this.receive.city.length-1),
+              token: this.token
+            },
+            {
+              transformRequest: [
+                function(data) {
+                  let ret = "";
+                  for (let it in data) {
+                    ret +=
+                      encodeURIComponent(it) +
+                      "=" +
+                      encodeURIComponent(data[it]) +
+                      "&";
+                  }
+                  return ret;
+                }
+              ]
+            }
+          )
+          .then(res => {
+            if (res.data.code == 0) {
+              this.limit = res.data.data.time_limit;
+            } else if (res.data.code == 450) {
+              this.$message.success("登录时间过长，请重新登录");
+              this.$router.push("/login");
+            }
+          });
     }
   }
 };

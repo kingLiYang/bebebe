@@ -12,7 +12,7 @@
             </el-row>
         </div>
 
-        <div id="myChart" :style="{width: '1400px', height: '600px'}"></div>
+        <div id="myChart" :style="{width: '1400px', height: '600px'}" v-loading="loading"></div>
         </div>
 
 </template>
@@ -22,7 +22,7 @@
         name: 'hello',
         data () {
             return {
-                msg: 'Welcome to Your Vue.js App'
+                loading: true
             }
         },
         mounted(){
@@ -37,7 +37,7 @@
                 let  BillNumber = JSON.parse(window.localStorage.getItem('BillNumber'));
                 that.EndTime = EndTime;
                 that.StartTime = StartTime;
-               // console.log(that.EndTime,  that.StartTime)
+
                 that.SheBeiHao =SheBeiHao;
                 that.BillNumber =BillNumber;
                 that.$axios({
@@ -66,22 +66,17 @@
                     ],
                     headers: { "Content-Type": "application/x-www-form-urlencoded" }
                 }).then(function(res) {
-console.log(res,1) ;
-                    // var pointArr = [];
+                    that.loading = false;
                     var arrX = [];
                     var arrY = [];
                     var num = Math.ceil(res.data.data.length / 20);
                     for (var k = 0; k < res.data.data.length; k ++) {
                         if(k % num == 0 || k == 0 || k == res.data.data.length - 1){
-                            // pointArr.push({
-                            //     temperature01: res.data.data[k].temperature01,
-                            //     time: res.data.data[k].time
-                            // });
                             arrX.push(res.data.data[k].time);
                             arrY.push(res.data.data[k].temperature01);
                         }
                     }
-                    // console.log(pointArr);return
+
                     // 基于准备好的dom，初始化echarts实例
                     let myChart = that.$echarts.init(document.getElementById('myChart'))
                     // 绘制图表

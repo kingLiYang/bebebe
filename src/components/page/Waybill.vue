@@ -33,7 +33,6 @@
               </el-form-item>
 
               <el-form-item label="发货时间">
-                <!-- <el-input v-model="name"></el-input> -->
                 <el-date-picker
                   v-model="value4"
                   value-format="yyyy-MM-dd HH:mm:ss"
@@ -55,20 +54,21 @@
         style="width: 100%"
         ref="multipleTable"
         @selection-change="handleSelectionChange"
+        v-loading="loading"
       >
         <el-table-column type="selection" width="60" align="center"></el-table-column>
-        <el-table-column type="index" width="70" label="序号" align="center"></el-table-column>
+        <el-table-column type="index" width="50" label="序号" align="center"></el-table-column>
         <el-table-column prop="ID" label="TMS订单号" align="center"></el-table-column>
         <el-table-column prop="Condition" label="运单状态" align="center" :formatter="formatter"></el-table-column>
-        <el-table-column prop="BillNUmber" label="运单号" align="center"></el-table-column>
-        <el-table-column prop="TakeTime" label="运单生成时间" align="center"></el-table-column>
+        <el-table-column prop="BillNUmber" label="运单号" align="center" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column prop="TakeTime" label="运单生成时间" align="center" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column
           prop="SendsAddress"
           label="发货地址"
           align="center"
           :show-overflow-tooltip="true"
         ></el-table-column>
-        <el-table-column prop="GetsTime" label="收货时间" align="center" :formatter="timesta"></el-table-column>
+        <el-table-column prop="GetsTime" label="收货时间" align="center" :formatter="timesta" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column
           prop="GetAddress"
           label="收货地址"
@@ -87,91 +87,17 @@
         </el-table-column>
       </el-table>
       <div class="pagination">
-        <!-- <el-pagination
-          @current-change="handleCurrentChange"
-          layout="prev, pager, next"
-          :page-size="10"
-          :total="ccc"
-        ></el-pagination> -->
-
         <el-pagination
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
         
-          :page-sizes="[100, 200, 300, 400]"
-          :page-size="10"
+          :page-sizes="[50, 100, 500, 2000]"
+          :page-size="50"
           layout="total, sizes, prev, pager, next, jumper"
           :total="ccc"
         ></el-pagination>
       </div>
     </div>
-    <!-- &lt;!&ndash; 温度信息弹出框 &ndash;&gt;
-        <el-dialog :title="title" :visible.sync="editVisible" width="50%"  >
-            <el-form ref="form" :model="form">
-                    <el-input v-model="company" style="width: 60px;"></el-input>
-            </el-form>
-
-            <span slot="footer" class="dialog-footer">
-
-            <el-button @click="editVisible = false">返 回</el-button>
-
-           </span>
-        </el-dialog>
-
-
-        &lt;!&ndash; 资料签收弹出框 &ndash;&gt;
-        <el-dialog :title="title" :visible.sync="qianshouVisible" width="50%" >
-            <table v-model="TMSorder">
-                <tr>
-                    <td class='table_td'>运单号</td>
-                    <td>111111111</td>
-                    <td class='table_td'>实际重量</td>
-                    <td>111111111</td>
-
-                </tr>
-                <tr>
-                    <td class='table_td'>货物名称</td>
-                    <td>1</td>
-                    <td class='table_td'>计费重量</td>
-                    <td>1</td>
-
-                </tr>
-                <tr>
-                    <td class='table_td'>始发城市</td>
-                    <td>1</td>
-                    <td class='table_td'>目的城市</td>
-                    <td>1</td>
-
-                </tr>
-                <tr>
-                    <td class='table_td'>温度计使用</td>
-                    <td>1</td>
-
-                    <td class='table_td'>件数</td>
-                    <td>1</td>
-                </tr>
-                <tr>
-                    <td class='table_td'>签收人</td>
-                    <td>1</td>
-
-                    <td class='table_td'>温度区间</td>
-                    <td>1</td>
-                </tr>
-                <tr>
-                    <td class='table_td'>签收时间</td>
-                    <td>1</td>
-
-                    <td class='table_td'>委托时间</td>
-                    <td>1</td>
-                </tr>
-            </table>
-
-            <span slot="footer" class="dialog-footer">
-
-            <el-button @click="qianshouVisible = false">返 回</el-button>
-
-           </span>
-    </el-dialog>-->
   </div>
 </template>
 
@@ -184,12 +110,13 @@ export default {
       select_cate: "", //运单状态
       tableData: [],
       GetsTime: "",
+      loading: true,
       form: {
         Waybill_number: "",
         Order_number: ""
       },
       cur_page: 1,
-      limit:"",
+      limit:50,
       ccc: 0, //总页数
       token: "",
       value4: [], //发货时间
@@ -239,11 +166,13 @@ export default {
     },
     // 分页导航
     handleCurrentChange(val) {
+      this.loading = true;
       this.cur_page = val;
       this.getData();
     },
     handleSizeChange(val){
         // console.log(val); // 每页显示  条数
+        this.loading = true;
         this.limit  = val;
         this.getData();
     },
@@ -283,9 +212,14 @@ export default {
           if (res.data.code == 0) {
             this.tableData = res.data.data;
             this.ccc = res.data.sum;
+            this.loading = false;
+          }else if(res.data.code == 450){
+            this.$message.success("登录时间过长，请重新登录");
+            this.$router.push("/login");
           } else {
             this.tableData = [];
             this.ccc = 1;
+            this.loading = false;
             this.$message.error(res.data.message);
           }
         });
@@ -465,7 +399,6 @@ export default {
 };
 </script>
 <style>
-  @import '../../../static/css/table.css';
 .el-table {
   color: #000;
 }

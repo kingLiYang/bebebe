@@ -47,7 +47,7 @@
         <el-table-column type="index" width="50" label="序号" align="center"></el-table-column>
         <el-table-column prop="art_no" label="货号" align="center"></el-table-column>
 
-        <el-table-column prop="model" label="型号" align="center"></el-table-column>
+        <el-table-column prop="model" label="型号" align="center" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column prop="trade_name" label="品名" align="center" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column prop="standard" label="规格" align="center" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column prop="danwei" label="单位" align="center"></el-table-column>
@@ -179,10 +179,12 @@ export default {
     },
     // 分页导航
     handleCurrentChange(val) {
+      this.loading=true;
       this.cur_page = val;
       this.getData();
     },
         handleSizeChange(val){
+          this.loading=true;
         // console.log(val); // 每页显示  条数
         this.limit  = val;
         this.getData();
@@ -381,7 +383,6 @@ export default {
 };
 </script>
 <style>
-@import '../../../static/css/table.css';
 .el-table{
   color:#000;
 }

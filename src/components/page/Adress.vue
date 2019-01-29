@@ -16,12 +16,12 @@
               <el-button size="small" type="primary" @click="handleEdit()">修改</el-button>
               <el-button size="small" type="danger" @click="handleDel()">删除</el-button>
             </el-col>
-            <el-col >
+            <el-col style="display:flex;flex-flow:wrap;">
               <el-form-item label="姓名">
-                <el-input v-model="username"></el-input>
+                <el-input v-model="username" size="mini" style="width:120px;"></el-input>
               </el-form-item>
               <el-form-item label="所属公司">
-                <el-input v-model="company"></el-input>
+                <el-input v-model="company" size="mini" style="width:120px;"></el-input>
               </el-form-item>
               <el-form-item label="地址类型">
                 <el-select v-model="type" placeholder="请选择" class="handle-select mr10">
@@ -30,7 +30,7 @@
                   <el-option label="收件地址" value="2"></el-option>
                 </el-select>
               </el-form-item>
-              <el-button type="primary" icon="search" @click="getData">查询</el-button>
+              <el-button type="primary" @click="getData" style="height:31px;">查询</el-button>
             </el-col>
           </el-row>
         </el-form>
@@ -49,7 +49,7 @@
 
         <el-table-column prop="phone" label="联系电话" align="center"></el-table-column>
         <el-table-column prop="type" label="地址类型" align="center" :formatter="timesta"></el-table-column>
-        <el-table-column prop="province" label="省份" align="center"></el-table-column>
+        <el-table-column prop="province" label="省份" align="center" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column prop="city" label="城市" align="center"></el-table-column>
         <el-table-column prop="district" label="区" align="center"></el-table-column>
         <el-table-column prop="company" label="公司" align="center" :show-overflow-tooltip="true"></el-table-column>
@@ -174,10 +174,12 @@ export default {
     },
     // 分页导航
     handleCurrentChange(val) {
+      this.loading = true;
       this.cur_page = val;
       this.getData();
     },
         handleSizeChange(val){
+          this.loading = true;
         // console.log(val); // 每页显示  条数
         this.limit  = val;
         this.getData();
@@ -410,7 +412,6 @@ export default {
 };
 </script>
 <style>
-@import '../../../static/css/table.css';
 .el-table{
   color:#000;
 }

@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="crumbs">
+        <div class="crumbs" >
             <el-row :gutter="20">
                 <el-col>
                     <el-breadcrumb separator="/">
@@ -11,8 +11,8 @@
                 </el-col>
             </el-row>
         </div>
-        <div class="container">
-        <div id="allmap" ref="allmap"></div>
+        <div class="container" v-loading="loading">
+        <div id="allmap" ref="allmap" ></div>
         </div>
     </div>
 </template>
@@ -21,7 +21,7 @@
     export default {
         data() {
             return {
-
+                loading: true
             };
         },
         methods: {
@@ -70,7 +70,7 @@
                     ],
                     headers: { "Content-Type": "application/x-www-form-urlencoded" }
                 }).then(function(res) {
-
+                    that.loading = false;
                     var pointArr = [];
 
                     var num = Math.ceil(res.data.data.length / 20);

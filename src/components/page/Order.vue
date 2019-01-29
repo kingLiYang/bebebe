@@ -84,12 +84,12 @@
       >
         <el-table-column type="selection" width="60" align="center"></el-table-column>
         <el-table-column type="index" width="50" label="序号" align="center"></el-table-column>
-        <el-table-column prop="order_code" label="订单号" align="center"></el-table-column>
+        <el-table-column prop="order_code" label="订单号" align="center" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column prop="status" label="审核状态" align="center" :formatter="changeSta" ></el-table-column>
-        <el-table-column prop="addtime" label="下单时间" align="center" :formatter="addtimesta"></el-table-column>
+        <el-table-column prop="addtime" label="下单时间" align="center" :formatter="addtimesta" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column prop="place_order_admin" label="下单人员" align="center"></el-table-column>
         <el-table-column prop="check_order_admin" label="审核人" align="center"></el-table-column>
-        <el-table-column prop="send_goods_time" label="发货时间" align="center" :formatter="timesta"></el-table-column>
+        <el-table-column prop="send_goods_time" label="发货时间" align="center" :formatter="timesta" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column
           prop="send_goods_address"
           label="发货地址"
@@ -103,7 +103,7 @@
           align="center"
           :show-overflow-tooltip="true"
         ></el-table-column>
-        <el-table-column prop="support_value" label="保价金额" align="center"></el-table-column>
+        <el-table-column prop="support_value" label="保价金额" align="center" :show-overflow-tooltip="true"></el-table-column>
         
       </el-table>
       <div class="pagination">
@@ -148,14 +148,15 @@
         <el-form-item label="订单号">
           <el-input v-model="formCheck.order_check" style="width: 300px;" disabled></el-input>
         </el-form-item>
-        <el-form-item label="时限">
+        <!-- <el-form-item label="时限">
             <el-select placeholder="请选择" class="handle-select mr10" v-model="formCheck.time_limit">
                 <el-option label="请选择" value></el-option>
-                <el-option label="12H" value="12H"></el-option>
-                <el-option label="24H" value="24H"></el-option>
-                <el-option label="36H" value="36H"></el-option>
-                <el-option label="48H" value="48H"></el-option>
-                <el-option label="72H" value="72H"></el-option>
+                <el-option label="12H" value="12"></el-option>
+                <el-option label="24H" value="24"></el-option>
+                <el-option label="36H" value="36"></el-option>
+                <el-option label="48H" value="48"></el-option>
+                <el-option label="72H" value="72"></el-option>
+                <el-option label="48-72H" value="48-72"></el-option>
               </el-select>
         </el-form-item>
                   <el-form-item label="运输方式">
@@ -164,7 +165,7 @@
                 <el-option label="陆路" value="陆路"></el-option>
                 <el-option label="空运" value="空运"></el-option>
               </el-select>
-        </el-form-item>
+        </el-form-item> -->
            
       </el-form>
       <el-row v-for="(item,index) in box_num" :key="index">
@@ -208,8 +209,8 @@ export default {
         order_num: "",
         order_box: "",
         order_check: "",
-        time_limit:"",
-        mode_type:""
+        // time_limit:"",
+        // mode_type:""
       },
       order_why: "",
       box_num: {},
@@ -295,10 +296,13 @@ export default {
     },
     // 分页导航
     handleCurrentChange(val) {
+      this.loading = true;
       this.cur_page = val;
       this.getData();
     },
     handleSizeChange(val){
+      this.loading = true;
+
         // console.log(val); // 每页显示  条数
         this.limit  = val;
         this.getData();
@@ -473,13 +477,7 @@ export default {
       
       if (status == 2 && this.order_why == "") {
         this.$message.error("请输入订单驳回的原因");
-      } else if(this.formCheck.mode_type == '' && status == 3){
-        // console.log(this.mode_type);return;
-        this.$message.error("请选择运输方式");
-      }else if(this.formCheck.time_limit == '' && status == 3){
-        // console.log(this.time_limit);return;
-        this.$message.error("请选择时限");
-      }else{
+      } else{
         // 订单 审核
         // console.log(this.time_limit);return;
         const Qs = require("qs");
@@ -492,8 +490,8 @@ export default {
               status: status,
               remark: this.order_why,
               box_num: this.box_num,
-              time_limit: this.formCheck.time_limit,
-              mode_type: this.formCheck.mode_type,
+              // time_limit: this.formCheck.time_limit,
+              // mode_type: this.formCheck.mode_type,
               token: this.token
             },
             {
@@ -710,7 +708,6 @@ export default {
 </script>
 
 <style>
-  @import '../../../static/css/table.css';
 .el-table{
   color:#000;
   
