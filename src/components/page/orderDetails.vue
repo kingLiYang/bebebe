@@ -9,12 +9,27 @@
             </el-breadcrumb-item>
           </el-breadcrumb>
         </el-col>
-        <el-col style="display:flex;" :offset="11">
-          <div style="margin: 0 20px 0 0;"><span style="color:blue;">订单号：</span>{{order_code}}</div>
-          <div><span style="color:blue;">保价金额：</span>{{support_value}}</div>
-          <div style="margin: 0 20px;"><span style="color:blue;">发货时间：</span>{{sendTime}}</div>
-          <div style="margin: 0 20px 0 0;"><span style="color:blue;">时限：</span>{{limit}}</div>
-          <div><span style="color:blue;">审核状态：</span>{{status}}</div>
+        <el-col style="display:flex;flex-flow: wrap;margin-top:10px;">
+          <div style="margin: 0 10px 0 0;">
+            <span style="color:blue;">订单号：</span>
+            {{order_code}}
+          </div>
+          <div>
+            <span style="color:blue;">保价金额：</span>
+            {{support_value}}
+          </div>
+          <div style="margin: 0 10px;">
+            <span style="color:blue;">发货时间：</span>
+            {{sendTime}}
+          </div>
+          <div style="margin: 0 10px 0 0;">
+            <span style="color:blue;">时限：</span>
+            {{limit}}
+          </div>
+          <div>
+            <span style="color:blue;">审核状态：</span>
+            {{status}}
+          </div>
         </el-col>
       </el-row>
     </div>
@@ -28,79 +43,70 @@
           :key="index"
         >
           <el-row>
-            <table v-for="(item,index) in item.drug" :key="index">
+            <table>
               <tr>
-                <td rowspan="4" style="background: rgb(32, 160, 255);color:#fff;">药品信息</td>
-                <td class="table_td">型号</td>
-                <td>{{item.model}}</td>
-                <td class="table_td">品名</td>
-                <td>{{item.trade_name}}</td>
+                <th>型号</th>
+                <th>品名</th>
+                <th>规格</th>
+                <th>储运温度</th>
+                <th>尺寸</th>
+                <th>放置方式</th>
+                <th>保价金额</th>
               </tr>
-              <tr>
-				 
-				  <td class="table_td">规格</td>
-				  <td>{{item.standard}}</td>
-				  <td class="table_td">储运温度</td>
-				  <td>{{item.temperature}}</td>
-			  </tr>
-			  <tr>
-				
-				  <td class="table_td">尺寸</td>
-				  <td>{{item.size}}</td>
-				  <td class="table_td">放置方式</td>
-				  <td>{{item.placement_mode}}</td>
-			  </tr>
-				<tr>
-			
-					<td class="table_td">保价金额</td>
-					<td>{{item.support}}</td>
-				</tr>
+              <tr v-for="(item,index) in item.drug_list" :key="index">
+                <td>{{item.model}}</td>
+                <td :title="item.trade_name">{{item.trade_name.length>2 ? item.trade_name.substr(0,3)+'...' : item.trade_name}}</td>
+                <td :title="item.standard">{{item.standard.length>6 ? item.standard.substr(0,7)+'...' : item.standard}}</td>
+                <td>{{item.temperature}}</td>
+                <td>{{item.size}}</td>
+                <td>{{item.placement_mode}}</td>
+                <td>{{item.support}}</td>
+              </tr>
             </table>
+  
           </el-row>
         </el-collapse-item>
       </el-collapse>
       <div>
         <h4 style="padding: 10px 0;">货物信息</h4>
         <el-row v-model="sendData">
-              <table>
+            <table>
               <tr>
-                <td rowspan="2" style="background: rgb(32, 160, 255);color:#fff;">发货信息</td>
-                <td class="table_td">发货人</td>
+                <th>发货人</th>
+                <th>联系电话</th>
+                <th>发货公司</th>
+                <th>发货地址</th>
+              </tr>
+              <tr>
                 <td>{{sendData.username}}</td>
-                <td class="table_td">联系电话</td>
                 <td>{{sendData.phone}}</td>
+                <td :title="sendData.company">{{sendData.company.length>6 ? sendData.company.substr(0,7)+'...' : sendData.company}}</td>
+                <td :title="sendData.province+sendData.city+sendData.district+sendData.address">{{(sendData.province+sendData.city+sendData.district+sendData.address).substr(0,7)}}...</td>
               </tr>
-
-			  <tr>
-				
-				  <td class="table_td">发货公司</td>
-				  <td>{{sendData.company}}</td>
-				  <td class="table_td">发货地址</td>
-				  <td>{{sendData.province+sendData.city+sendData.district+sendData.address}}</td>
-			  </tr>
             </table>
         </el-row>
-                <el-row v-model="getDatamsg">
-              <table>
+        <el-row v-model="getDatamsg">
+          <table style="margin-top:10px;">
+            <tr>
+                <th>收货人</th>
+                <th>联系电话</th>
+                <th>收货公司</th>
+                <th>收货地址</th>
+            </tr>
               <tr>
-                <td rowspan="2" style="background: rgb(32, 160, 255);color:#fff;">收货信息</td>
-                <td class="table_td">收货人</td>
                 <td>{{getDatamsg.username}}</td>
-                <td class="table_td">联系电话</td>
                 <td>{{getDatamsg.phone}}</td>
+                <td :title="getDatamsg.company">{{getDatamsg.company.length>6 ? getDatamsg.company.substr(0,7)+'...' : getDatamsg.company}}</td>
+                <td :title="getDatamsg.province+getDatamsg.city+getDatamsg.district+getDatamsg.address">{{(getDatamsg.province+getDatamsg.city+getDatamsg.district+getDatamsg.address).substr(0,7)}}...</td>
               </tr>
-
-			  <tr>
-				
-				  <td class="table_td">收货公司</td>
-				  <td>{{getDatamsg.company}}</td>
-				  <td class="table_td">收货地址</td>
-				  <td>{{getDatamsg.province+getDatamsg.city+getDatamsg.district+getDatamsg.address}}</td>
-			  </tr>
-            </table>
+          </table>
         </el-row>
-
       </div>
+        <el-form  >
+          <el-form-item label="备注">
+            <el-input type="textarea" v-model="remark" disabled></el-input>
+          </el-form-item>
+        </el-form>
     </div>
   </div>
 </template>
@@ -108,18 +114,19 @@
 export default {
   data() {
     return {
+      remark:"",
       activeNames: [],
       id: "",
       token: "",
       order_code: "",
       oneTitle: "",
       drugmsg: [],
-      sendData:{},
-      support_value:"",
-      limit:"",
-      sendTime:"",
-      status:"",
-      getDatamsg:""
+      sendData: {},
+      support_value: "",
+      limit: "",
+      sendTime: "",
+      status: "",
+      getDatamsg: ""
     };
   },
   created() {
@@ -157,23 +164,27 @@ export default {
           this.order_code = data.order_code;
           this.limit = data.time_limit;
           this.getDatamsg = data.get_goods_address;
-          this.sendTime = this.dateFormat(data.send_goods_time,'yyyy-mm-dd hh:ii:ss');
+          this.sendTime = this.dateFormat(
+            data.send_goods_time,
+            "yyyy-mm-dd hh:ii:ss"
+          );
           this.sendData = data.send_goods_address;
           this.support_value = data.support_value;
-          
+          this.remark = data.remark;
+
           switch (data.status) {
-            case 0 :
-            this.status = "待审核";
-            break;
-            case 1 :
-            this.status = "通过";
-            break;
-            case 2 :
-            this.status = "驳回";
-            break;
-            case 3 :
-            this.status = "完成";
-            break;
+            case 0:
+              this.status = "待审核";
+              break;
+            case 1:
+              this.status = "通过";
+              break;
+            case 2:
+              this.status = "驳回";
+              break;
+            case 3:
+              this.status = "完成";
+              break;
           }
           this.drugmsg = data.drug;
           this.drugmsg.forEach(item => {
@@ -194,34 +205,54 @@ export default {
           });
         });
     },
-//     formatterAddTime(row, column) {
-//     return this.dateFormat(row.add_time,'yyyy-mm-dd');
-// },
-dateFormat:function(time,fmt = 'yyyy-mm-dd hh:ii:ss') {
-    time = parseInt(time)*1000;
-    let date=new Date(time);
-    let year=date.getFullYear();
-    let month= date.getMonth()+1<10 ? "0"+(date.getMonth()+1) : date.getMonth()+1;
-    let day=date.getDate()<10 ? "0"+date.getDate() : date.getDate();
-    let hours=date.getHours()<10 ? "0"+date.getHours() : date.getHours();
-    let minutes=date.getMinutes()<10 ? "0"+date.getMinutes() : date.getMinutes();
-    let seconds=date.getSeconds()<10 ? "0"+date.getSeconds() : date.getSeconds();
-    // 拼接
-    switch (fmt) {
-        case 'yyyy-mm-dd hh:ii:ss':
-            return year+"-"+month+"-"+day+" "+hours+":"+minutes+":"+seconds;
-            break;
-        default :
-            return year+"-"+month+"-"+day;
+    //     formatterAddTime(row, column) {
+    //     return this.dateFormat(row.add_time,'yyyy-mm-dd');
+    // },
+    dateFormat: function(time, fmt = "yyyy-mm-dd hh:ii:ss") {
+      time = parseInt(time) * 1000;
+      let date = new Date(time);
+      let year = date.getFullYear();
+      let month =
+        date.getMonth() + 1 < 10
+          ? "0" + (date.getMonth() + 1)
+          : date.getMonth() + 1;
+      let day = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
+      let hours =
+        date.getHours() < 10 ? "0" + date.getHours() : date.getHours();
+      let minutes =
+        date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
+      let seconds =
+        date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds();
+      // 拼接
+      switch (fmt) {
+        case "yyyy-mm-dd hh:ii:ss":
+          return (
+            year +
+            "-" +
+            month +
+            "-" +
+            day +
+            " " +
+            hours +
+            ":" +
+            minutes +
+            ":" +
+            seconds
+          );
+          break;
+        default:
+          return year + "-" + month + "-" + day;
+      }
     }
-}
-
   }
 };
 </script>
 <style>
-.el-collapse-item__header{
-  background: rgba(0,0,0,0.2)
+.el-collapse-item__header {
+  background: rgba(0, 0, 0, 0.2);
+}
+.el-collapse-item__content{
+  padding-bottom: 10px;
 }
 </style>
 
@@ -230,7 +261,6 @@ td,
 th {
   border: solid #ccc;
   border-width: 0px 1px 1px 0px;
-  padding: 10px 0px;
   text-align: center;
 }
 
@@ -239,7 +269,6 @@ table {
   border-width: 1px 0px 0px 1px;
   border-collapse: collapse;
   width: 100%;
-  margin: 0 0 20px 0;
 }
 .table_td {
   background-color: #eff4f6;

@@ -197,7 +197,8 @@ export default {
             BillNumber: this.BillNumber, //运单号
             SheBeiHao: this.SheBeiHao, //设备编号
             StartTime: this.value4[0] || "", // 下单开始时间
-            EndTime: this.value4[1] || "" // 下单结束时间
+            EndTime: this.value4[1] || "", // 下单结束时间
+            token: this.token
           },
           {
             transformRequest: [
@@ -227,7 +228,10 @@ export default {
             this.Police_H = res.data.Police_H || "0";
 
             this.tableData = res.data.data;
-            this.ccc = res.data.sum;
+            this.tableData.forEach(item =>{
+              item.id = this.SheBeiHao;
+            })
+            this.ccc = res.data.count;
           } else {
             this.loading = false;
             this.isShow = true;

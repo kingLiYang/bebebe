@@ -22,8 +22,12 @@
         name: 'hello',
         data () {
             return {
-                loading: true
+                loading: true,
+                token: ""
             }
+        },
+        created(){
+            this.token = window.sessionStorage.getItem("token");
         },
         mounted(){
             this.drawLine();
@@ -49,6 +53,7 @@
                         state:"quxian",
                         EndTime:that.EndTime||"",
                         StartTime:that.StartTime||"",
+                        token: that.token
 
                     },
                     transformRequest: [

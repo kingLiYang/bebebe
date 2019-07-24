@@ -1,105 +1,23 @@
 <template>
   <div>
     <div class="loader1 loader">
-        <span>敬请期待</span>
-      <div></div>
-      <div></div>
-      <div></div>
-    </div>
-    <!-- <el-row :gutter="20">
-            <el-col :span="8">
-                <el-row>
-                    <el-col>
-                        <el-card shadow="hover" class="mgb20">
-                            <div class="user-info">
-                                <img src="static/img/img.jpg" class="user-avator" alt="">
-                                <div class="user-info-cont">
-                                    <div class="user-info-name">{{name}}</div>
-                                    <div>{{role}}</div>
-                                </div>
-                            </div>
-                            <div class="user-info-list">上次登录时间：<span>2018-01-01</span></div>
-                            <div class="user-info-list">上次登录地点：<span>东莞</span></div>
-                        </el-card>
-                        <el-card shadow="hover">
-                            <div slot="header" class="clearfix">
-                                <span>语言详情</span>
-                            </div>
-                            Vue
-                            <el-progress :percentage="57.2" color="#42b983"></el-progress>
-                            JavaScript
-                            <el-progress :percentage="29.8" color="#f1e05a"></el-progress>
-                            CSS
-                            <el-progress :percentage="11.9"></el-progress>
-                            HTML
-                            <el-progress :percentage="1.1" color="#f56c6c"></el-progress>
-                        </el-card>
-                    </el-col>
-                </el-row>
-            </el-col>
-            <el-col :span="16">
-                <el-row :gutter="20" class="mgb20">
-                    <el-col :span="8">
-                        <el-card shadow="hover" :body-style="{padding: '0px'}">
-                            <div class="grid-content grid-con-1">
-                                <i class="el-icon-view grid-con-icon"></i>
-                                <div class="grid-cont-right">
-                                    <div class="grid-num">1234</div>
-                                    <div>用户访问量</div>
-                                </div>
-                            </div>
-                        </el-card>
-                    </el-col>
-                    <el-col :span="8">
-                        <el-card shadow="hover" :body-style="{padding: '0px'}">
-                            <div class="grid-content grid-con-2">
-                                <i class="el-icon-message grid-con-icon"></i>
-                                <div class="grid-cont-right">
-                                    <div class="grid-num">321</div>
-                                    <div>系统消息</div>
-                                </div>
-                            </div>
-                        </el-card>
-                    </el-col>
-                    <el-col :span="8">
-                        <el-card shadow="hover" :body-style="{padding: '0px'}">
-                            <div class="grid-content grid-con-3">
-                                <i class="el-icon-goods grid-con-icon"></i>
-                                <div class="grid-cont-right">
-                                    <div class="grid-num">5000</div>
-                                    <div>数量</div>
-                                </div>
-                            </div>
-                        </el-card>
-                    </el-col>
-                </el-row>
-                <el-card shadow="hover" :body-style="{ height: '304px'}">
-                    <div slot="header" class="clearfix">
-                        <span>待办事项</span>
-                        <el-button style="float: right; padding: 3px 0" type="text">添加</el-button>
-                    </div>
-                    <el-table :data="todoList" :show-header="false" height="304" style="width: 100%;font-size:14px;">
-                        <el-table-column width="40">
-                            <template slot-scope="scope">
-                                <el-checkbox v-model="scope.row.status"></el-checkbox>
-                            </template>
-                        </el-table-column>
-                        <el-table-column>
-                            <template slot-scope="scope">
-                                <div class="todo-item" :class="{'todo-item-del': scope.row.status}">{{scope.row.title}}</div>
-                            </template>
-                        </el-table-column>
-                        <el-table-column width="60">
-                            <template slot-scope="scope">
-                                <i class="el-icon-edit"></i>
-                                <i class="el-icon-delete"></i>
-                            </template>
-                        </el-table-column>
-                    </el-table>
-                </el-card>
+      <!-- <ul>
+      				<li class="issues-add issues-add-wb">
+					<div class="iss-account" v-for="(item,index) in weiboList" :key="item.index" >
+						<i class="icon-t icon-account" v-show="item.isAccountWb"></i>
+						<el-checkbox @change="suer(item,$event,index)" :label="item.screenName" :title="item.screenName" border ></el-checkbox>
+					</div>
+					<div  @click="toAddPage('1')" :class="{addID:true,issuesFont:true,addActive:false}"><i class="icon icon-issues-add2"></i>添加账号</div>
+				</li>
+      </ul> -->
 
-            </el-col>
-    </el-row>-->
+      <img src="static/img/home.jpg" style="width:100%;">
+        <!-- <span>敬请期待</span>
+      <div></div>
+      <div></div>
+      <div></div> -->
+    </div>
+
   </div>
 </template>
 
@@ -107,33 +25,50 @@
 export default {
   data() {
     return {
-      // name: localStorage.getItem('ms_username'),
-      // todoList: [
-      //     {
-      //         title: '今天要修复100个bug',
-      //         status: false,
-      //     },
-      //     {
-      //         title: '今天要修复100个bug',
-      //         status: false,
-      //     },
-      //     {
-      //         title: '今天要写100行代码加几个bug吧',
-      //         status: false,
-      //     }, {
-      //         title: '今天要修复100个bug',
-      //         status: false,
-      //     },
-      //     {
-      //         title: '今天要修复100个bug',
-      //         status: true,
-      //     },
-      //     {
-      //         title: '今天要写100行代码加几个bug吧',
-      //         status: true,
-      //     }
-      // ]
+      // weiboList: [{screenName: '微博1',isAccountWb: false,type: 1},{screenName: '微博2',isAccountWb: false,type: 1},{screenName: '微博3',isAccountWb: false,type: 1}]
     };
+  },
+  methods: {
+		suer(data,event,index){
+      if (data.type === 1) { // 微博
+      console.log(index);
+        // this.weiboList[index].isAccountWb == true ? this.weiboList[index].isAccountWb = false : this.weiboList[index].isAccountWb = true
+        this.weiboList[index].isAccountWb = this.weiboList[index].isAccountWb == true ? false : true;
+        console.log(this.weiboList);
+
+				// this.isAccountWb =false
+			  // let accessToken = data.accessToken
+				// let _index = this.wbAccountSum.indexOf(accessToken)
+				// if (event) {
+				// 	this.isAccountWb = !this.isAccountWb
+				// 	this.weiboList[index].isAccountWb = true
+				// 	console.log()
+				// 	if ( _index === -1) {
+				// 		this.wbAccountSum.push(data.accessToken)
+				// 	}	
+				// } else {
+				// 	if (_index !== -1) {
+				// 		this.wbAccountSum.splice(_index, 1)
+				// 	}	
+				// }
+			}else if(data.type === '2'){ //微信
+				this.isAccountWx =false
+				let id = data.id
+				let type = this.value
+				let params = id+"-"+type
+				let _index = this.wxAccountSum.findIndex(item => item === params)
+				if (event) {
+					this.isAccountWx = !this.isAccountWx
+					if ( _index === -1) {
+						this.wxAccountSum.push(params)
+					}	
+				} else {
+					if (_index !== -1) {
+						this.wxAccountSum.splice(_index, 1)
+					}	
+				}
+			}else { }  //人民号 
+		},
   },
   computed: {
     // role() {
@@ -145,7 +80,7 @@ export default {
 
 
 <style scoped>
-.loader1{
+/* .loader1{
     display: flex;
     align-items: center;
     justify-content: center;
@@ -185,7 +120,7 @@ export default {
 }
 .loader1 div:nth-child(3) {
 	-webkit-animation: loader1 0.75s 0s ease infinite;
-}
+} */
 
 
 

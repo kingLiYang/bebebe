@@ -4,7 +4,7 @@
         <v-sidebar></v-sidebar>
         <div class="content-box" :class="{'content-collapse':collapse}">
             <v-tags></v-tags>
-            <div class="content">
+            <div class="content" style="heigth:100%;">
                 <transition name="move" mode="out-in">
                     <!-- <keep-alive> -->
                         <router-view></router-view>

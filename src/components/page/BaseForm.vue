@@ -515,7 +515,7 @@ export default {
 };
 </script>
 <style>
-.el-table{
+.el-table .cell{
   color:#000;
 }
 

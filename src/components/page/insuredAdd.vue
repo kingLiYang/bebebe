@@ -3,72 +3,54 @@
     <div class="crumbs">
       <el-breadcrumb separator="/">
         <el-breadcrumb-item>
-          <i class="el-icon-tickets"></i> 试剂添加
+          <i class="el-icon-tickets"></i>
+          {{title}}
         </el-breadcrumb-item>
       </el-breadcrumb>
     </div>
 
     <div class="container">
-      <div class="handle-box">
-        <el-form label-width="100px" :gutter="20">
-          <el-col :span="5" :pull="1">
-            <el-form-item label="货号">
-              <el-input v-model="art_no"></el-input>
+      <div>
+        <el-form label-width="80px" v-model="addData" :inline="true" style="padding:10px 0 0 0;">
+          <el-row>
+            <el-form-item label="开始城市">
+              <el-input v-model="addData.start_city"></el-input>
             </el-form-item>
-          </el-col>
+            <el-form-item label="目的城市">
+              <el-input v-model="addData.end_city"></el-input>
+            </el-form-item>
+            <el-form-item label="时限">
+              <el-input v-model="addData.time_limit"></el-input>
+            </el-form-item>
+          </el-row>
+          <el-row>
+            <el-form-item label="12L">
+              <el-input v-model="addData.box_type4"></el-input>
+            </el-form-item>
+            <el-form-item label="28L">
+              <el-input v-model="addData.box_type3"></el-input>
+            </el-form-item>
+            <el-form-item label="56L">
+              <el-input v-model="addData.box_type2"></el-input>
+            </el-form-item>
+          </el-row>
+          <el-row>
+            <el-form-item label="97L">
+              <el-input v-model="addData.box_type1"></el-input>
+            </el-form-item>
+            <el-form-item label="130L">
+              <el-input v-model="addData.box_type5"></el-input>
+            </el-form-item>
+            <el-form-item label="审核人">
+              <el-select placeholder="请选择" class="handle-select mr10" v-model="addData.auditor">
+                <el-option label="请选择" value></el-option>
+                <el-option label="-25℃~-15℃" value="-25℃~-15℃"></el-option>
+                <el-option label="2℃~8℃" value="2℃~8℃"></el-option>
+                <el-option label="15℃~25℃" value="15℃~25℃"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-row>
         </el-form>
-      </div>
-      <div style="margin-top: 60px;">
-        <ul class="drug_list">
-          <li v-for="(item,index) in drug_data" :key="index">
-            <div style="width:max-content;margin-top:-24px;background:#fff;padding:0 5px;">
-              <span style="font-weight:800;">药品信息</span>
-              <span @click="add_drug" style="color:blue;cursor:pointer;">添加</span>
-              <span @click="del_drug(index)" style="color:blue;cursor:pointer;">删除</span>
-            </div>
-            <el-form label-width="80px" :inline="true" style="padding:10px 0 0 0;">
-              <el-row >
-              <el-form-item label="型号">
-                <el-input v-model="item.model"></el-input>
-              </el-form-item>
-              <el-form-item label="保价金额">
-                <el-col>
-                  <el-input v-model="item.support" @blur="isSupport(item.support)"></el-input>
-                </el-col>
-              </el-form-item>
-              </el-row>
-
-              <el-form-item label="储运温度">
-                <el-select placeholder="请选择" class="handle-select mr10" v-model="item.temperature">
-                  <el-option label="请选择" value></el-option>
-                  <el-option label="-25℃~-15℃" value="-25℃~-15℃"></el-option>
-                  <el-option label="2℃~8℃" value="2℃~8℃"></el-option>
-                  <el-option label="15℃~25℃" value="15℃~25℃"></el-option>
-                </el-select>
-              </el-form-item>
-                  <el-form-item label="放置方式">
-                    <el-input v-model="item.placement_mode"></el-input>
-                  </el-form-item>
-                  <el-form-item label="品名">
-                    <el-input v-model="item.trade_name" ></el-input>
-                  </el-form-item>
-                  <el-form-item label="尺寸">
-                    <el-input
-                      v-model="item.size"
-                      @blur="chicun(item.size,index)"
-                      ref="content"
-                      placeholder="分隔符必须为*"
-                    ></el-input>
-                  </el-form-item>
-                  <el-form-item label="规格">
-                      <el-input v-model="item.standard"></el-input>
-                  </el-form-item>
-            </el-form>
-            <p
-              style="font-size:12px;line-height:30px;color:#999;padding-left:60px;"
-            >Tips : 格式为5*8*8，分隔符必须为*，单位默认为mm</p>
-          </li>
-        </ul>
       </div>
 
       <el-button @click="addReturn">返 回</el-button>
@@ -80,36 +62,49 @@
 export default {
   data() {
     return {
+      title: "",
       art_no: "",
       isSubmit: false,
       isCommit: false,
-      drug_data: [
+      addData: [
         {
-          art_no: "", // 货号
-          model: "", // 型号
-          trade_name: "", // 品名
-          temperature: "", // 储存温度
-          standard: "", // 规格
-          support: "", // 保价金额
-          placement_mode: "", // 放置方式
-          size: "" // 尺寸
+          start_city: "",
+          end_city: "",
+          time_limit: "",
+          box_type4: "",
+          box_type3: "",
+          box_type2: "",
+          box_type1: "",
+          box_type5: "",
+          auditor: ""
         }
       ],
       token: ""
     };
   },
+  beforeCreate() {
+    //   console.log(this.$route.query.sta)
+  },
   created() {
-    this.token = window.sessionStorage.getItem("token");
+    if (this.$route.query.sta == "修改") {
+      
+      this.title = "保价修改";
+      this.$route.meta.title = '修改保价';
+    }else{
+		this.title = "保价添加";
+		this.$route.meta.title = '添加保价';
+	}
+	this.token = window.sessionStorage.getItem("token");
+	console.log(this.$route);
   },
   methods: {
-    isSupport(aaa){
+    isSupport(aaa) {
       let reg = /^[0-9]*$/; // 只能数字
-      if(reg.test(aaa)){
+      if (reg.test(aaa)) {
         this.isCommit = true;
-      }else{
+      } else {
         this.isCommit = false;
         this.$message.error("只能输入数字!");
-
       }
     },
     add_drug() {
@@ -133,7 +128,7 @@ export default {
       }
     },
     addReturn() {
-      this.$router.push("/drug");
+      this.$router.push("/insured");
     },
     chicun(aaa, index) {
       // 尺寸 正则
@@ -159,7 +154,7 @@ export default {
           item.art_no = this.art_no;
         });
       }
-      if (this.isSubmit&&this.isCommit) {
+      if (this.isSubmit && this.isCommit) {
         this.$axios
           .post(
             this.URL_API + "/berry/public/index.php/drug/add",
@@ -187,10 +182,10 @@ export default {
             if (res.data.code == 0) {
               this.$message.success("添加成功");
               this.$router.push("/drug");
-            }else if(res.data.code == 450){
-            this.$message.success("登录时间过长，请重新登录");
-            this.$router.push("/login");
-          } else {
+            } else if (res.data.code == 450) {
+              this.$message.success("登录时间过长，请重新登录");
+              this.$router.push("/login");
+            } else {
               this.$message.error(res.data.message);
             }
           })

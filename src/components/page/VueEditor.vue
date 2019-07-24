@@ -18,11 +18,17 @@
         <!-- <el-button type="primary" icon="search" @click="search">搜索</el-button> -->
         <el-button type="primary" @click="handleAdd()">添加</el-button>
       </div>
-      <el-table :data="tableData" border style="width: 100%" ref="multipleTable" v-loading="loading">
-        <el-table-column type="index" width="100" label="序号" align="center"></el-table-column>
+      <el-table
+        :data="tableData"
+        border
+        style="width: 100%"
+        ref="multipleTable"
+        v-loading="loading"
+      >
+        <el-table-column type="index"  label="序号" align="center"></el-table-column>
         <el-table-column prop="department" label="部门" align="center"></el-table-column>
         <el-table-column prop="name" label="职务" align="center"></el-table-column>
-        <el-table-column label="操作" align="center">
+        <el-table-column label="操作" align="center" width="300">
           <template slot-scope="scope">
             <el-button size="small" @click="handleMenu(scope.$index, scope.row)">分配菜单</el-button>
             <el-button size="small" type="primary" @click="handleEdit(scope.$index, scope.row)">修改</el-button>
@@ -65,7 +71,7 @@
       <el-tree
         :data="data2"
         show-checkbox
-		highlight-current
+        highlight-current
         node-key="o_id"
         ref="tree"
         :default-expand-all="true"
@@ -118,7 +124,9 @@ export default {
       //     this.url = '/ms/table/list';
       // };
       this.$axios
-        .post(this.URL_API + "/berry/public/index.php/role/index",{token:this.token},
+        .post(
+          this.URL_API + "/berry/public/index.php/role/index",
+          { token: this.token },
           {
             transformRequest: [
               function(data) {
@@ -133,16 +141,16 @@ export default {
                 return ret;
               }
             ]
-          })
+          }
+        )
         .then(res => {
-          if(res.data.code == 0){
-          this.tableData = res.data.data;
-          this.loading = false;
-          }else if(res.data.code == 450){
+          if (res.data.code == 0) {
+            this.tableData = res.data.data;
+            this.loading = false;
+          } else if (res.data.code == 450) {
             this.$message.success("登录时间过长，请重新登录");
             this.$router.push("/login");
           }
-
         });
     },
     handleAdd() {
@@ -167,35 +175,33 @@ export default {
         token: this.token
       };
       this.$axios
-        .post(this.URL_API + "/berry/public/index.php/role/add", webData,
-          {
-            transformRequest: [
-              function(data) {
-                let ret = "";
-                for (let it in data) {
-                  ret +=
-                    encodeURIComponent(it) +
-                    "=" +
-                    encodeURIComponent(data[it]) +
-                    "&";
-                }
-                return ret;
+        .post(this.URL_API + "/berry/public/index.php/role/add", webData, {
+          transformRequest: [
+            function(data) {
+              let ret = "";
+              for (let it in data) {
+                ret +=
+                  encodeURIComponent(it) +
+                  "=" +
+                  encodeURIComponent(data[it]) +
+                  "&";
               }
-            ]
-          })
+              return ret;
+            }
+          ]
+        })
         .then(res => {
           // this.tableData = res.data.data;
           if (res.data.code == 0) {
-              this.editVisible = false;
+            this.editVisible = false;
             if (this.title == "修改职务") {
               this.$message.success("修改成功");
             } else {
               this.$message.success("添加成功");
             }
 
-            
             this.getData();
-          }else if(res.data.code == 450){
+          } else if (res.data.code == 450) {
             this.$message.success("登录时间过长，请重新登录");
             this.$router.push("/login");
           }
@@ -205,10 +211,12 @@ export default {
       this.r_id = row.r_id;
       // 修改 职务 默认获取数据
       this.$axios
-        .post(this.URL_API + "/berry/public/index.php/role/update", {
-          r_id: row.r_id,
-          token: this.token
-        },
+        .post(
+          this.URL_API + "/berry/public/index.php/role/update",
+          {
+            r_id: row.r_id,
+            token: this.token
+          },
           {
             transformRequest: [
               function(data) {
@@ -223,7 +231,8 @@ export default {
                 return ret;
               }
             ]
-          })
+          }
+        )
         .then(res => {
           let data = res.data;
           if (data.code == 0) {
@@ -231,7 +240,7 @@ export default {
             this.form.options = data.data.department;
             this.title = "修改职务";
             this.editVisible = true;
-          }else if(res.data.code == 450){
+          } else if (res.data.code == 450) {
             this.$message.success("登录时间过长，请重新登录");
             this.$router.push("/login");
           }
@@ -245,10 +254,12 @@ export default {
     // 确定删除
     deleteRow() {
       this.$axios
-        .post(this.URL_API + "/berry/public/index.php/role/del", {
-          id: this.r_id,
-          token: this.token
-        },
+        .post(
+          this.URL_API + "/berry/public/index.php/role/del",
+          {
+            id: this.r_id,
+            token: this.token
+          },
           {
             transformRequest: [
               function(data) {
@@ -263,7 +274,8 @@ export default {
                 return ret;
               }
             ]
-          })
+          }
+        )
         .then(res => {
           let data = res.data;
           if (data.code == 0) {
@@ -274,9 +286,15 @@ export default {
         });
     },
     // 分配菜单 默认
-    handleMenu(index,row){
-		this.r_id = row.r_id;
-        this.$axios.get(this.URL_API+"/berry/public/index.php/role/allot?role_id="+this.r_id+"&token="+this.token,
+    handleMenu(index, row) {
+      this.r_id = row.r_id;
+      this.$axios
+        .get(
+          this.URL_API +
+            "/berry/public/index.php/role/allot?role_id=" +
+            this.r_id +
+            "&token=" +
+            this.token,
           {
             transformRequest: [
               function(data) {
@@ -291,24 +309,29 @@ export default {
                 return ret;
               }
             ]
-          }).then(res=>{
-            if(res.data.code == 0){
-                this.data2 = res.data.data.all;
-                this.data3 = res.data.data.default;
-                this.allotVisible = true;
-            }else if(res.data.code == 450){
+          }
+        )
+        .then(res => {
+          if (res.data.code == 0) {
+            this.data2 = res.data.data.all;
+            this.data3 = res.data.data.default;
+            this.allotVisible = true;
+          } else if (res.data.code == 450) {
             this.$message.success("登录时间过长，请重新登录");
             this.$router.push("/login");
           }
-        })
+        });
     },
-    // 分配菜单 提交 
-    allotOrder(){
-        this.$axios.post(this.URL_API+'/berry/public/index.php/role/allot',{
-			role_id: this.r_id,
-      oauth_id: this.$refs.tree.getCheckedKeys(),
-      token: this.token
-		},
+    // 分配菜单 提交
+    allotOrder() {
+      this.$axios
+        .post(
+          this.URL_API + "/berry/public/index.php/role/allot",
+          {
+            role_id: this.r_id,
+            oauth_id: this.$refs.tree.getCheckedKeys(),
+            token: this.token
+          },
           {
             transformRequest: [
               function(data) {
@@ -323,25 +346,25 @@ export default {
                 return ret;
               }
             ]
-          }).then(res=>{
-            if(res.data.code == 0){
-				this.$message.success('分配成功');
-				this.allotVisible = false;
-				this.getData();
-            }
-        })
+          }
+        )
+        .then(res => {
+          if (res.data.code == 0) {
+            this.$message.success("分配成功");
+            this.allotVisible = false;
+            this.getData();
+          }
+        });
     }
   }
 };
 </script>
 <style>
-.el-table{
-  color:#000;
+.el-table {
+  color: #000;
 }
-
 </style>
 <style scoped>
-
 .handle-box {
   margin-bottom: 20px;
 }

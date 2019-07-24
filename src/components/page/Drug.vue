@@ -37,23 +37,24 @@
       </div>
       <el-table
         :data="tableData"
-        border
         style="width: 100%"
         ref="multipleTable"
+        max-height="400"
+        border
         @selection-change="handleSelectionChange"
         v-loading="loading"
       >
-        <el-table-column type="selection" width="60" align="center"></el-table-column>
-        <el-table-column type="index" width="50" label="序号" align="center"></el-table-column>
+        <el-table-column type="selection" align="center"></el-table-column>
+        <el-table-column type="index"  label="序号" align="center" fixed></el-table-column>
         <el-table-column prop="art_no" label="货号" align="center"></el-table-column>
 
         <el-table-column prop="model" label="型号" align="center" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column prop="trade_name" label="品名" align="center" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column prop="standard" label="规格" align="center" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column prop="danwei" label="单位" align="center"></el-table-column>
-        <el-table-column prop="temperature" label="储运温度" align="center"></el-table-column>
+        <el-table-column prop="temperature" label="储运温度" align="center" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column prop="support" label="保价金额" align="center"></el-table-column>
-        <el-table-column prop="size" label="尺寸（长*宽*高）" align="center"></el-table-column>
+        <el-table-column prop="size" label="尺寸（长*宽*高）" align="center" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column prop="placement_mode" label="放置方式" align="center" :show-overflow-tooltip="true"></el-table-column>
       </el-table>
       <div class="pagination">
@@ -75,7 +76,7 @@
     </div>
 
     <!-- 修改 弹框 -->
-    <el-dialog :title="title" :visible.sync="editVisible" width="30%">
+    <el-dialog :title="title" :visible.sync="editVisible">
       <div class="handle-box">
         <el-form label-width="100px" :gutter="20">
           <el-col :span="10">
@@ -95,10 +96,11 @@
               <el-form-item label="保价金额">
                 <el-col>
                   <el-input v-model="form.support"></el-input>
+                  <!-- <span style="color:red;position:absolute;width:100px;top:26px;" v-if="isMoney">格式输入有误！</span> -->
                 </el-col>
               </el-form-item>
               <el-form-item label="储运温度">
-                <el-select placeholder="请选择" class="handle-select mr10" v-model="form.temperature">
+                <el-select placeholder="请选择" class="mr10" v-model="form.temperature">
                   <el-option label="请选择" value></el-option>
                   <el-option label="-25℃~-15℃" value="-25℃~-15℃"></el-option>
                   <el-option label="2℃~8℃" value="2℃~8℃"></el-option>
@@ -170,6 +172,13 @@ export default {
   },
   created() {
     this.token = window.sessionStorage.getItem("token");
+    let obj = JSON.parse(window.sessionStorage.getItem('drug'));
+    if(obj != null){
+      this.art_no = obj.art_no;
+      this.model = obj.model;
+      this.cur_page = obj.page;
+      this.limit = obj.limit;
+    }
     this.getData();
   },
   computed: {},
@@ -190,6 +199,8 @@ export default {
         this.getData();
     },
     handleAdd() {
+      let obj = {art_no: this.art_no,model:this.model,page: this.cur_page,limit: this.limit,};
+      window.sessionStorage.setItem('drug',JSON.stringify(obj));
       this.$router.push("/addDrug");
     },
     getData() {
@@ -390,9 +401,7 @@ export default {
 </style>
 <style scoped>
 
-.handle-box {
-  margin-bottom: 20px;
-}
+
 
 .handle-select {
   width: 120px;

@@ -22,6 +22,13 @@ export default new Router({
                     }
                 },
                 {
+                    path: '/1',
+                    component: resolve => require(['../components/page/Dashboard.vue'], resolve),
+                    meta: {
+                        title: 'hahaha'
+                    }
+                },
+                {
                     // 用户管理
                     path: '/user',
                     component: resolve => require(['../components/page/BaseForm.vue'], resolve),
@@ -50,7 +57,8 @@ export default new Router({
                     path: '/address',
                     component: resolve => require(['../components/page/Adress.vue'], resolve),
                     meta: {
-                        title: '地址管理'
+                        title: '地址管理',
+                        keepAlive: true
                     }
                 },
                 {
@@ -58,7 +66,8 @@ export default new Router({
                     path: '/drug',
                     component: resolve => require(['../components/page/Drug.vue'], resolve),
                     meta: {
-                        title: '试剂管理'
+                        title: '试剂管理',
+                        keepAlive: true
                     }
                 },
                 {
@@ -74,7 +83,8 @@ export default new Router({
                     path: '/initOrder',
                     component: resolve => require(['../components/page/Order.vue'], resolve),
                     meta: {
-                        title: '订单管理'
+                        title: '订单管理',
+                        keepAlive: true
                     }
                 },
                 // init_order 订单添加
@@ -106,7 +116,8 @@ export default new Router({
                     path: '/InitWayBill',
                     component: resolve => require(['../components/page/Waybill.vue'], resolve),
                     meta: {
-                        title: '运单管理'
+                        title: '运单管理',
+                        keepAlive: true
                     }
                 },
                 // init_order 运单详情
@@ -141,6 +152,14 @@ export default new Router({
                         title: '温度监控详情'
                     }
                 },
+                //温度监控详情 1000b的
+                {
+                    path: '/pdf',
+                    component: resolve => require(['../components/page/temPdf.vue'], resolve),
+                    meta: {
+                        title: '温度监控详情'
+                    }
+                },
                 //轨迹详情
                 {
                     path:"/TrajectoryDetails",
@@ -163,7 +182,16 @@ export default new Router({
                     path:"/feiyong",
                     component: resolve => require(['../components/page/cost.vue'],resolve),
                     meta:{
-                        title: '费用管理'
+                        title: '费用管理',
+                        keepAlive: true
+                    }
+                },
+                //  费用保价
+                {
+                    path: '/insured',
+                    component: resolve => require(['../components/page/insured.vue'],resolve),
+                    meta:{
+                        title: '费用保价'
                     }
                 }
             ]

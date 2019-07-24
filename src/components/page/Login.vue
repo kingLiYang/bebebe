@@ -4,7 +4,7 @@
     <div class="ms-login">
       <el-form :model="ruleForm" :rules="rules" label-width="0px" class="demo-ruleForm">
         <el-form-item prop="username">
-          <el-input v-model="ruleForm.username" placeholder="请输入用户名"></el-input>
+          <el-input v-model="ruleForm.username" placeholder="请输入用户名" ></el-input>
         </el-form-item>
         <el-form-item prop="password">
           <el-input
@@ -12,6 +12,7 @@
             placeholder="请输入密码"
             v-model="ruleForm.password"
             @keyup.enter.native="submitForm()"
+
           ></el-input>
         </el-form-item>
         <div class="login-btn">
@@ -68,6 +69,7 @@ export default {
           if (res.data.code == 0) {
             window.sessionStorage.setItem("username", this.ruleForm.username);
             window.sessionStorage.setItem("role_name", res.data.data.role_name);
+            window.sessionStorage.setItem("AccountNumber", res.data.data.AccountNumber);
             window.sessionStorage.setItem("token", res.data.data.token);
 
             this.$router.push({ path: "/" });
@@ -114,4 +116,5 @@ export default {
   width: 100%;
   height: 36px;
 }
+
 </style>

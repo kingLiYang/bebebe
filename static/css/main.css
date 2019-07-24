@@ -22,7 +22,7 @@ a {
 
 .content-box {
     position: absolute;
-    left: 250px;
+    left: 200px;
     right: 0;
     top: 70px;
     bottom: 0;
@@ -42,7 +42,7 @@ a {
 }
 
 .container {
-    padding: 30px;
+    padding: 10px;
     background: #fff;
     border: 1px solid #ddd;
     border-radius: 5px;
@@ -175,3 +175,19 @@ a {
 
     border-radius: 5px;
 }
+
+.el-input--small .el-input__inner {
+    width: 118px;
+  }
+  .ms-login .el-input--small .el-input__inner {
+    width: 300px;
+}
+.el-pagination__jump .el-input--small .el-input__inner{
+    width: 37px;
+}
+.el-dialog__body .el-input--small .el-input__inner {
+    width: 350px;
+  }
+  .el-textarea textarea{
+    resize: none;
+  }

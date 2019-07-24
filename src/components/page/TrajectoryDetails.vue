@@ -21,8 +21,12 @@
     export default {
         data() {
             return {
-                loading: true
+                loading: true,
+                token:""
             };
+        },
+        created(){
+            this.token = window.sessionStorage.getItem("token");
         },
         methods: {
             map() {
@@ -54,6 +58,7 @@
                         state:"guiji",
                         EndTime:that.EndTime||"",
                         StartTime:that.StartTime||"",
+                        token: this.token
                     },
                     transformRequest: [
                         function(data) {
